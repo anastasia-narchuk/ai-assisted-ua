@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Кейс: От выгрузки конкурента до готовых кампаний за 15 минут</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --dark: #141413;
+    --light: #faf9f5;
+    --mid-gray: #b0aea5;
+    --light-gray: #e8e6dc;
+    --orange: #d97757;
+    --blue: #6a9bcc;
+    --green: #788c5d;
+    --orange-soft: #f5e6de;
+    --blue-soft: #e3eef6;
+    --green-soft: #e8eddf;
+    --card-shadow: 0 1px 3px rgba(20,20,19,0.06), 0 8px 24px rgba(20,20,19,0.04);
+    --card-shadow-hover: 0 2px 6px rgba(20,20,19,0.08), 0 12px 32px rgba(20,20,19,0.06);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Lora', Georgia, serif;
+    background: var(--light);
+    color: var(--dark);
+    line-height: 1.7;
+    font-size: 17px;
+  }
+
+  /* ── Hero ── */
+  .hero {
+    background: var(--dark);
+    color: var(--light);
+    padding: 80px 0 72px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -120px; right: -80px;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(217,119,87,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -100px; left: -60px;
+    width: 350px; height: 350px;
+    background: radial-gradient(circle, rgba(106,155,204,0.1) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-inner {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 32px;
+    position: relative;
+    z-index: 1;
+  }
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(217,119,87,0.15);
+    border: 1px solid rgba(217,119,87,0.3);
+    color: var(--orange);
+    padding: 6px 16px;
+    border-radius: 100px;
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 28px;
+  }
+  .hero-badge svg { width: 16px; height: 16px; }
+  .hero h1 {
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: clamp(28px, 4.5vw, 44px);
+    font-weight: 800;
+    line-height: 1.15;
+    margin-bottom: 20px;
+    letter-spacing: -0.5px;
+  }
+  .hero h1 span { color: var(--orange); }
+  .hero-subtitle {
+    font-size: 19px;
+    color: var(--mid-gray);
+    max-width: 640px;
+    line-height: 1.6;
+  }
+
+  /* ── Metric banner ── */
+  .metric-banner {
+    background: white;
+    border: 1px solid var(--light-gray);
+    border-radius: 16px;
+    max-width: 860px;
+    margin: -36px auto 0;
+    padding: 28px 36px;
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr auto 1fr;
+    align-items: center;
+    gap: 0;
+    box-shadow: var(--card-shadow);
+  }
+  .metric-item { text-align: center; }
+  .metric-number {
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--dark);
+    line-height: 1.2;
+  }
+  .metric-number.accent-orange { color: var(--orange); }
+  .metric-number.accent-green { color: var(--green); }
+  .metric-label {
+    font-size: 14px;
+    color: var(--mid-gray);
+    margin-top: 4px;
+  }
+  .metric-divider {
+    width: 1px;
+    height: 48px;
+    background: var(--light-gray);
+  }
+
+  /* ── Container ── */
+  .container {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+
+  /* ── Section ── */
+  .section {
+    padding: 64px 0;
+  }
+  .section-label {
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 12px;
+  }
+  .section h2 {
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: clamp(22px, 3vw, 30px);
+    font-weight: 700;
+    line-height: 1.25;
+    margin-bottom: 20px;
+    color: var(--dark);
+  }
+  .section-intro {
+    font-size: 17px;
+    color: #5a5850;
+    max-width: 680px;
+    margin-bottom: 36px;
+  }
+
+  /* ── Pipeline ── */
+  .pipeline-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    position: relative;
+  }
+  .pipeline-step {
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    gap: 24px;
+    position: relative;
+  }
+  .step-indicator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .step-number {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Poppins', Arial, sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    color: white;
+    flex-shrink: 0;
+  }
+  .step-number.orange { background: var(--orange); }
+  .step-number.blue { background: var(--blue); }
+  .step-number.green { background: var(--green); }
+  .step-number.dark { background: var(--dark); }
+  .step-line {
+    width: 2px;
+    flex: 1;
+    background: var(--light-gray);
+    min-height: 24px;
+  }
+  .step-content {
+    padding-bottom: 36px;
+  }
+  .step-content h3 {
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    line-height: 1.3;
+    padding-top: 8px;
+  }
+  .step-content p {
+    color: #5a5850;
+    margin-bottom: 12px;
+  }
+
+  /* ── Chat simulation ── */
+  .chat-block {
+    background: white;
+    border: 1px solid var(--light-gray);
+    border-radius: 14px;
+    overflow: hidden;
+    margin: 16px 0;
+    box-shadow: var(--card-shadow);
+  }
+  .chat-header {
+    background: var(--dark);
+    color: var(--light);
+    padding: 10px 18px;
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .chat-header .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--orange);
+  }
+  .chat-msg {
+    padding: 16px 20px;
+    border-bottom: 1px solid #f0efe8;
+  }
+  .chat-msg:last-child { border-bottom: none; }
+  .chat-msg.user {
+    background: #fdfcfa;
+  }
+  .chat-msg.ai {
+    background: white;
+  }
+  .chat-sender {
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+  }
+  .chat-sender.user-name { color: var(--blue); }
+  .chat-sender.ai-name { color: var(--orange); }
+  .chat-text {
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--dark);
+  }
+  .chat-text code {
+    background: var(--light-gray);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+  }
+
+  /* ── Data tables ── */
+  .data-table-wrapper {
+    overflow-x: auto;
+    margin: 16px 0;
+    border-radius: 12px;
+    border: 1px solid var(--light-gray);
+    box-shadow: var(--card-shadow);
+  }
+  table.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+  table.data-table th {
+    background: var(--dark);
+    color: var(--light);
+    font-family: 'Poppins', Arial, sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 12px 16px;
+    text-align: left;
+    white-space: nowrap;
+  }
+  table.data-table td {
+    padding: 10px 16px;
+    border-bottom: 1px solid #f0efe8;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+  table.data-table tr:last-child td { border-bottom: none; }
+  table.data-table tr:nth-child(even) { background: #fdfcfa; }
+  table.data-table .tag {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 100px;
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .tag-orange { background: var(--orange-soft); color: #a85a3a; }
+  .tag-blue { background: var(--blue-soft); color: #4a7ba8; }
+  .tag-green { background: var(--green-soft); color: #5a6d42; }
+  .tag-gray { background: #f0efe8; color: #7a786e; }
+  .tag-red { background: #fce4e4; color: #c44; }
+
+  .row-strikethrough td {
+    text-decoration: line-through;
+    color: var(--mid-gray);
+  }
+
+  /* ── Before/After ── */
+  .before-after {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 16px;
+    align-items: start;
+    margin: 20px 0;
+  }
+  .ba-card {
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--light-gray);
+    box-shadow: var(--card-shadow);
+  }
+  .ba-card-header {
+    padding: 10px 16px;
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .ba-card-header.before { background: #fce4e4; color: #a33; }
+  .ba-card-header.after { background: var(--green-soft); color: #4a6332; }
+  .ba-card-body {
+    padding: 14px 16px;
+    background: white;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 13px;
+    line-height: 1.8;
+  }
+  .ba-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 44px;
+    color: var(--orange);
+  }
+  .ba-arrow svg { width: 28px; height: 28px; }
+
+  /* ── Advanced Tips ── */
+  .tips-section {
+    background: linear-gradient(135deg, #1a1a19 0%, #2a2a28 100%);
+    border-radius: 20px;
+    padding: 44px 40px;
+    margin: 20px 0 0;
+    color: var(--light);
+  }
+  .tips-section .section-label { color: var(--orange); }
+  .tips-section h2 { color: var(--light); }
+  .tip-card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+    padding: 24px;
+    margin-bottom: 16px;
+    transition: border-color 0.2s;
+  }
+  .tip-card:hover {
+    border-color: rgba(217,119,87,0.3);
+  }
+  .tip-card:last-child { margin-bottom: 0; }
+  .tip-icon {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 14px;
+    font-size: 18px;
+  }
+  .tip-icon.orange { background: rgba(217,119,87,0.15); }
+  .tip-icon.blue { background: rgba(106,155,204,0.15); }
+  .tip-icon.green { background: rgba(120,140,93,0.15); }
+  .tip-card h4 {
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--light);
+  }
+  .tip-card p {
+    font-size: 15px;
+    color: var(--mid-gray);
+    line-height: 1.6;
+  }
+  .tip-card .highlight {
+    color: var(--orange);
+    font-weight: 500;
+  }
+
+  /* ── Key Insight callout ── */
+  .insight-callout {
+    background: var(--orange-soft);
+    border-left: 4px solid var(--orange);
+    border-radius: 0 12px 12px 0;
+    padding: 20px 24px;
+    margin: 20px 0;
+  }
+  .insight-callout strong {
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--orange);
+    display: block;
+    margin-bottom: 4px;
+  }
+  .insight-callout p {
+    font-size: 15px;
+    color: #5a4a3a;
+  }
+
+  /* ── Principle box ── */
+  .principle-box {
+    background: white;
+    border: 1px solid var(--light-gray);
+    border-radius: 14px;
+    padding: 24px 28px;
+    margin: 20px 0;
+    box-shadow: var(--card-shadow);
+  }
+  .principle-box h4 {
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: var(--dark);
+  }
+  .principle-box p {
+    color: #5a5850;
+    font-size: 15px;
+  }
+
+  /* ── Footer ── */
+  .footer {
+    text-align: center;
+    padding: 48px 0 40px;
+    color: var(--mid-gray);
+    font-size: 14px;
+    border-top: 1px solid var(--light-gray);
+  }
+  .footer a { color: var(--orange); text-decoration: none; }
+
+  /* ── Responsive ── */
+  @media (max-width: 640px) {
+    .metric-banner {
+      grid-template-columns: 1fr;
+      gap: 16px;
+      padding: 24px;
+    }
+    .metric-divider { width: 100%; height: 1px; }
+    .before-after {
+      grid-template-columns: 1fr;
+    }
+    .ba-arrow { transform: rotate(90deg); padding: 0; }
+    .tips-section { padding: 28px 20px; }
+    .pipeline-step { grid-template-columns: 44px 1fr; gap: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ════════════════════ HERO ════════════════════ -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+      Кейс #1 — Убираем рутину
+    </div>
+    <h1>От выгрузки конкурента<br>до готовых кампаний<br>за <span>15 минут</span></h1>
+    <p class="hero-subtitle">Полный пайплайн работы с семантикой: сбор, фильтрация, очистка, кластеризация и сверка с активными кампаниями — в одном разговоре с Claude.</p>
+  </div>
+</section>
+
+<!-- ════════════════════ METRICS ════════════════════ -->
+<div class="metric-banner">
+  <div class="metric-item">
+    <div class="metric-number">2 400+</div>
+    <div class="metric-label">ключей на входе</div>
+  </div>
+  <div class="metric-divider"></div>
+  <div class="metric-item">
+    <div class="metric-number accent-orange">15 мин</div>
+    <div class="metric-label">вместо 3-4 часов</div>
+  </div>
+  <div class="metric-divider"></div>
+  <div class="metric-item">
+    <div class="metric-number accent-green">8 кластеров</div>
+    <div class="metric-label">готовый файл для загрузки</div>
+  </div>
+</div>
+
+<!-- ════════════════════ CONTEXT ════════════════════ -->
+<section class="section">
+  <div class="container">
+    <div class="section-label">Зачем это нужно</div>
+    <h2>Проблема: семантика — это бутылочное горлышко</h2>
+    <p class="section-intro">Каждое новое гео или расширение кампаний начинается с одного и того же: выгрузка ключей конкурентов из ASO-тулы, ручная проверка каждого ключа на релевантность, чистка символов, дедупликация, раскладка по кампаниям. На файле в 2 000+ строк — это 3-4 часа сфокусированной работы. А гео может быть 15-20.</p>
+
+    <div class="principle-box">
+      <h4>Ключевой принцип</h4>
+      <p>Мы не просто «ускоряем» ручную работу. Мы передаём AI контекст принятия решений (какие ключи считать релевантными, как кластеризовать, какие правила нормализации), и дальше AI обрабатывает тысячи строк, применяя эту логику консистентно — без усталости и ошибок внимания.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════ PIPELINE ════════════════════ -->
+<section class="section" style="padding-top: 0;">
+  <div class="container">
+    <div class="section-label">Пошаговый процесс</div>
+    <h2>6 шагов — от сырого файла до готовых кампаний</h2>
+
+    <div class="pipeline-steps">
+
+      <!-- ── STEP 1 ── -->
+      <div class="pipeline-step">
+        <div class="step-indicator">
+          <div class="step-number orange">1</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-content">
+          <h3>Загрузка выгрузки из ASO-тулы</h3>
+          <p>Загружаем Excel-файл с ключевыми словами конкурента из FoxData, Mobile Action, AppTweak или другой ASO-тулы. Обычно файл содержит: ключевое слово, позиция в ранжировании, search popularity (SAP/Volume), топ-5 приложений в органике.</p>
+
+          <div class="chat-block">
+            <div class="chat-header"><div class="dot"></div> Диалог с Claude</div>
+            <div class="chat-msg user">
+              <div class="chat-sender user-name">Вы</div>
+              <div class="chat-text">Вот выгрузка FoxData по конкуренту ScreenCast Pro на гео Бразилия. Нужно собрать из неё ключи для samsung-кластера. Мои прямые конкуренты — MirrorPlus, CastApp, ScreenLink. Если по ключу непонятно, релевантен ли он — смотри, есть ли хотя бы 2 из этих конкурентов в топ-5 органики.</div>
+            </div>
+            <div class="chat-msg ai">
+              <div class="chat-sender ai-name">Claude</div>
+              <div class="chat-text">Файл загружен, вижу 2 426 ключевых слов. Сейчас пройдусь по каждому и отфильтрую для samsung-кластера. Буду ориентироваться на вхождение samsung/smart view/smartthings/allshare, а для неочевидных ключей проверю наличие MirrorPlus, CastApp или ScreenLink в колонке Top 5.</div>
+            </div>
+          </div>
+
+          <div class="insight-callout">
+            <strong>Обратите внимание</strong>
+            <p>Мы общаемся с Claude естественным языком — не «промптим», а описываем задачу так, как объясняли бы её коллеге. Передаём контекст: кто наши конкуренты, по какому принципу определяем релевантность, что именно нужно на выходе.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── STEP 2 ── -->
+      <div class="pipeline-step">
+        <div class="step-indicator">
+          <div class="step-number orange">2</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-content">
+          <h3>Фильтрация по релевантности</h3>
+          <p>Claude проходит по всем строкам файла и применяет два фильтра: search popularity (SAP ≥ заданного порога) и проверку релевантности через наличие прямых конкурентов в топ-5 органики.</p>
+
+          <div class="data-table-wrapper">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Ключ</th>
+                  <th>SAP</th>
+                  <th>Top 5 органика</th>
+                  <th>Решение</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>smart view samsung tv</td>
+                  <td>38</td>
+                  <td>MirrorPlus, SmartThings, CastApp, ScreenLink, TVCast</td>
+                  <td><span class="tag tag-green">✓ Взять</span></td>
+                </tr>
+                <tr>
+                  <td>samsung remote control</td>
+                  <td>52</td>
+                  <td>SamsungRemote, PeelSmart, RemoteTV, IRBlaster, UniRemote</td>
+                  <td><span class="tag tag-red">✗ Пульт, не миррор</span></td>
+                </tr>
+                <tr>
+                  <td>espelhar tela</td>
+                  <td>41</td>
+                  <td>MirrorPlus, ScreenLink, CastApp, AirDroid, LetsView</td>
+                  <td><span class="tag tag-green">✓ Generic, не samsung</span></td>
+                </tr>
+                <tr>
+                  <td>tvzão pro</td>
+                  <td>7</td>
+                  <td>CastApp, MirrorPlus, TVCast, ScreenLink, AllConnect</td>
+                  <td><span class="tag tag-blue">? В тест</span></td>
+                </tr>
+                <tr>
+                  <td>pokemon go</td>
+                  <td>61</td>
+                  <td>PokemonGO, Niantic, PokeGenie, CalcyIV, PokeRaid</td>
+                  <td><span class="tag tag-red">✗ Нерелевант</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>Ключи, которые не имеют явного смысла, но по которым высоко ранжируются прямые конкуренты — <strong>не выбрасываем</strong>. Они попадают в тестовую группу. В App Store такие ключи часто отлично конвертят (пример из практики: <code>dlna orange</code> в FR — окупается за 3 месяца).</p>
+        </div>
+      </div>
+
+      <!-- ── STEP 3 ── -->
+      <div class="pipeline-step">
+        <div class="step-indicator">
+          <div class="step-number blue">3</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-content">
+          <h3>Очистка и нормализация</h3>
+          <p>Ключи должны быть готовы к загрузке в рекламный кабинет или инструмент типа Asapty. Правила нормализации задаются один раз — Claude применяет их ко всему списку.</p>
+
+          <div class="before-after">
+            <div class="ba-card">
+              <div class="ba-card-header before">До очистки</div>
+              <div class="ba-card-body">
+                screen mirroring: cast to tv<br>
+                Samsung Smart-View™<br>
+                cast.phone to tv<br>
+                espelhamento tela — samsung<br>
+                allshare cast (dongle)<br>
+                ket nôi samsung<br>
+                SMART&nbsp;&nbsp;VIEW&nbsp;&nbsp;TV
+              </div>
+            </div>
+            <div class="ba-arrow">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </div>
+            <div class="ba-card">
+              <div class="ba-card-header after">После очистки</div>
+              <div class="ba-card-body">
+                screen mirroring cast to tv<br>
+                samsung smart view<br>
+                cast phone to tv<br>
+                espelhamento tela samsung<br>
+                allshare cast dongle<br>
+                ket noi samsung<br>
+                smart view tv
+              </div>
+            </div>
+          </div>
+
+          <div class="principle-box">
+            <h4>Правила нормализации</h4>
+            <p><strong>Пунктуация → пробел</strong> (двоеточия, тире, точки, скобки, ™ и пр.), но без склейки слов и без двойных пробелов. <strong>Диакритики → базовые символы</strong> (ô → o, é → e и т.д.), т.к. Apple воспринимает их одинаково при биддинге. <strong>Lowercase</strong>. <strong>Дедупликация</strong> после всех преобразований.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── STEP 4 ── -->
+      <div class="pipeline-step">
+        <div class="step-indicator">
+          <div class="step-number blue">4</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-content">
+          <h3>Кластеризация по группам кампаний</h3>
+          <p>Claude распределяет очищенные ключи по заданным кластерам. Правила кластеризации можно описать один раз и сохранить в контексте проекта — они будут применяться в каждой следующей сессии.</p>
+
+          <div class="chat-block">
+            <div class="chat-header"><div class="dot"></div> Диалог с Claude</div>
+            <div class="chat-msg user">
+              <div class="chat-sender user-name">Вы</div>
+              <div class="chat-text">Кластеризуй по этим группам: airplay (всё с air/apple tv, НО air screen и airdroid — бренды → в generic), samsung (включая smart view, smartthings), lg, chromecast, fire, miracast, brands (остальные бренды ТВ), generic. Если ключ на стыке двух кластеров — положи в более специфичный.</div>
+            </div>
+            <div class="chat-msg ai">
+              <div class="chat-sender ai-name">Claude</div>
+              <div class="chat-text">Готово! Распределила 347 ключей по 8 кластерам. Вот разбивка: samsung — 50, generic — 124, airplay — 48, lg — 31, chromecast — 28, fire — 22, miracast — 19, brands — 25. Есть 4 ключа на стыке — положила в более специфичные кластеры, покажу каждый для ревью.</div>
+            </div>
+          </div>
+
+          <div class="data-table-wrapper">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Ключ</th>
+                  <th>Кластер</th>
+                  <th>SAP</th>
+                  <th>Комментарий</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>smart view samsung tv</td>
+                  <td><span class="tag tag-orange">samsung</span></td>
+                  <td>38</td>
+                  <td>—</td>
+                </tr>
+                <tr>
+                  <td>allshare cast dongle</td>
+                  <td><span class="tag tag-orange">samsung</span></td>
+                  <td>12</td>
+                  <td>Старая технология Samsung</td>
+                </tr>
+                <tr>
+                  <td>espelhamento tela</td>
+                  <td><span class="tag tag-gray">generic</span></td>
+                  <td>41</td>
+                  <td>«Зеркалирование экрана» на PT</td>
+                </tr>
+                <tr>
+                  <td>airplay tv philips</td>
+                  <td><span class="tag tag-blue">brands</span></td>
+                  <td>9</td>
+                  <td>Philips специфичнее airplay</td>
+                </tr>
+                <tr>
+                  <td>air screen mirroring</td>
+                  <td><span class="tag tag-gray">generic</span></td>
+                  <td>15</td>
+                  <td>AirScreen = бренд → generic</td>
+                </tr>
+                <tr>
+                  <td>screen mirroring lg tv</td>
+                  <td><span class="tag tag-green">lg</span></td>
+                  <td>22</td>
+                  <td>—</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="insight-callout">
+            <strong>Пограничные случаи</strong>
+            <p>Claude показывает все спорные решения для ревью. Например: <code>airplay apple tv samsung</code> — на стыке airplay и samsung. Claude кладёт в samsung (более специфичный бренд) и объясняет почему. Вы подтверждаете или перемещаете.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── STEP 5 ── -->
+      <div class="pipeline-step">
+        <div class="step-indicator">
+          <div class="step-number green">5</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-content">
+          <h3>Сверка с активными ключами</h3>
+          <p>Загружаем текущий список запущенных ключей (экспорт из Asapty / рекламного кабинета) — Claude сопоставляет и исключает дубли, чтобы не запускать одни и те же ключи повторно.</p>
+
+          <div class="chat-block">
+            <div class="chat-header"><div class="dot"></div> Диалог с Claude</div>
+            <div class="chat-msg user">
+              <div class="chat-sender user-name">Вы</div>
+              <div class="chat-text">Вот ключи которые уже запущены в моей samsung-кампании на BR: smart view, samsung smart view, samsung, samsung tv, screen mirroring samsung. Исключи их из финального списка и пометь новые.</div>
+            </div>
+            <div class="chat-msg ai">
+              <div class="chat-sender ai-name">Claude</div>
+              <div class="chat-text">Исключила 5 совпадений. Из 50 ключей samsung-кластера осталось <strong>45 новых</strong>, которых ещё нет в кампании. Сохраняю файл с колонкой «Статус» — новый / уже запущен.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── STEP 6 ── -->
+      <div class="pipeline-step">
+        <div class="step-indicator">
+          <div class="step-number green">6</div>
+          <div class="step-line" style="background: transparent;"></div>
+        </div>
+        <div class="step-content">
+          <h3>Выходной файл — готов к загрузке</h3>
+          <p>На выходе — Excel-файл (или несколько файлов по кластерам) с очищенными ключами, готовый для загрузки в Asapty, Google Ads Editor, или любой другой инструмент.</p>
+
+          <div class="data-table-wrapper">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Ключ (нормализован)</th>
+                  <th>Кластер</th>
+                  <th>SAP</th>
+                  <th>Статус</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>smart view samsung tv</td>
+                  <td><span class="tag tag-orange">samsung</span></td>
+                  <td>38</td>
+                  <td><span class="tag tag-green">Новый</span></td>
+                </tr>
+                <tr>
+                  <td>allshare cast dongle</td>
+                  <td><span class="tag tag-orange">samsung</span></td>
+                  <td>12</td>
+                  <td><span class="tag tag-green">Новый</span></td>
+                </tr>
+                <tr style="opacity: 0.45;">
+                  <td><s>samsung smart view</s></td>
+                  <td><span class="tag tag-orange">samsung</span></td>
+                  <td>44</td>
+                  <td><span class="tag tag-gray">Уже запущен</span></td>
+                </tr>
+                <tr>
+                  <td>espelhamento tela</td>
+                  <td><span class="tag tag-gray">generic</span></td>
+                  <td>41</td>
+                  <td><span class="tag tag-green">Новый</span></td>
+                </tr>
+                <tr>
+                  <td>screen mirroring lg tv</td>
+                  <td><span class="tag tag-green">lg</span></td>
+                  <td>22</td>
+                  <td><span class="tag tag-green">Новый</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /pipeline-steps -->
+  </div>
+</section>
+
+<!-- ════════════════════ ADVANCED TIPS ════════════════════ -->
+<section class="section" style="padding-top: 0;">
+  <div class="container">
+    <div class="tips-section">
+      <div class="section-label">Advanced Tips</div>
+      <h2 style="margin-bottom: 28px;">Как выжать максимум из этого пайплайна</h2>
+
+      <!-- Tip 1 -->
+      <div class="tip-card">
+        <div class="tip-icon orange">🎙</div>
+        <h4>Надиктуйте контекст голосом — не тратьте время на форматирование</h4>
+        <p>Не нужно писать структурированные промпты. Надиктуйте голосом всю логику принятия решений как есть — в режиме thoughts dump: «у нас есть приложение для screen mirroring, основные конкуренты вот эти, если по ключу непонятно — смотрим есть ли наши конкуренты в топе, ключи про remote нам не нужны, а вот smart view это samsung technology...» Claude разберётся с неструктурированным вводом и <span class="highlight">выстроит логику сам</span>.</p>
+      </div>
+
+      <!-- Tip 2 -->
+      <div class="tip-card">
+        <div class="tip-icon blue">🔍</div>
+        <h4>Используйте нестандартные тулы для поиска семантики</h4>
+        <p>Помимо ASO-тулов (FoxData, Mobile Action, AppTweak), попросите Claude помочь покопать семантику в <span class="highlight">Google Keyword Planner</span> — он хорошо находит low-frequency ключи, которые люди тоже могут искать в App Store. <span class="highlight">Google Trends</span> поможет найти зарождающиеся ключи, которые только начинают набирать обороты в вашем топике. Спросите Claude: «какие ещё тулы можно использовать для исследования ключей в нише [ваша ниша]?» — AI предложит варианты, о которых вы могли не подумать.</p>
+      </div>
+
+      <!-- Tip 3 -->
+      <div class="tip-card">
+        <div class="tip-icon green">💡</div>
+        <h4>Добавьте «право голоса» AI в инструкции проекта — один раз</h4>
+        <p>Не надейтесь что вспомните попросить AI подумать шире — на третьей сессии забудете. Добавьте в <span class="highlight">инструкции проекта</span> в Claude строку вроде:</p>
+        <div style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 14px 18px; margin: 12px 0; font-size: 14px; color: var(--light); line-height: 1.6; font-style: italic;">
+          «При работе с семантикой — если замечаешь паттерн, кластер или группировку, которую я не задала явно, всегда предлагай. Если считаешь что ключ лучше подходит в другой кластер — скажи почему. Если видишь локальные слова-синонимы или необычные конструкции в конкретном гео — обрати на них внимание. Не ограничивайся только тем что я попросила.»
+        </div>
+        <p>Теперь AI будет проявлять инициативу <span class="highlight">в каждой сессии автоматически</span>. Например, может заметить что ключи типа <code>web video cast</code> формируют отдельную группу, или что в данном гео есть локальные слова-синонимы, о которых вы не знали.</p>
+      </div>
+
+      <!-- Tip 4 -->
+      <div class="tip-card">
+        <div class="tip-icon orange">📋</div>
+        <h4>Сохраните контекст в проекте — не повторяйте себя</h4>
+        <p>В Claude можно создать проект и загрузить в него базовый контекст: описание продукта, правила кластеризации, список конкурентов, правила нормализации. После этого для каждого нового гео достаточно <span class="highlight">загрузить файл и написать одну строку</span>: «Собери samsung-кластер для BR из этого файла». Вся логика уже в контексте — не нужно каждый раз объяснять заново.</p>
+      </div>
+
+      <!-- Tip 5 -->
+      <div class="tip-card">
+        <div class="tip-icon blue">🌐</div>
+        <h4>Работает не только для ASA — применимо к любому каналу с ключами</h4>
+        <p>Этот же пайплайн работает для <span class="highlight">Google Ads (Search)</span>, <span class="highlight">Apple Search Ads</span>, <span class="highlight">ASO-оптимизации</span>, и любого другого канала, где вы работаете с ключевыми словами. Правила нормализации различаются (в Google Ads другие требования к символам), но принцип тот же: передали контекст → загрузили данные → получили чистый результат.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════ SUMMARY ════════════════════ -->
+<section class="section" style="padding-top: 0;">
+  <div class="container">
+    <div class="section-label">Итог</div>
+    <h2>Что получаем в результате</h2>
+
+    <!-- Big stat cards -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 32px 0;">
+
+      <!-- Card 1: Time -->
+      <div style="background: white; border: 1px solid var(--light-gray); border-radius: 16px; padding: 32px 28px; box-shadow: var(--card-shadow); position: relative; overflow: hidden;">
+        <div style="position: absolute; top: -12px; right: -8px; font-size: 80px; opacity: 0.06; font-family: 'Poppins', sans-serif; font-weight: 800; line-height: 1;">⏱</div>
+        <div style="font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--orange); margin-bottom: 12px;">Скорость</div>
+        <div style="display: flex; align-items: baseline; gap: 8px; margin-bottom: 6px;">
+          <span style="font-family: 'Poppins', sans-serif; font-size: 48px; font-weight: 800; color: var(--dark); line-height: 1;">15</span>
+          <span style="font-family: 'Poppins', sans-serif; font-size: 20px; font-weight: 600; color: var(--mid-gray);">мин</span>
+        </div>
+        <div style="font-size: 15px; color: var(--mid-gray);">вместо <span style="text-decoration: line-through; color: #c99;">3-4 часов</span> ручной работы</div>
+        <div style="margin-top: 14px; background: var(--orange-soft); border-radius: 8px; padding: 8px 14px; font-size: 13px; color: #a85a3a; font-family: 'Poppins', sans-serif; font-weight: 500; display: inline-block;">×12 быстрее</div>
+      </div>
+
+      <!-- Card 2: Volume -->
+      <div style="background: white; border: 1px solid var(--light-gray); border-radius: 16px; padding: 32px 28px; box-shadow: var(--card-shadow); position: relative; overflow: hidden;">
+        <div style="position: absolute; top: -12px; right: -8px; font-size: 80px; opacity: 0.06; font-family: 'Poppins', sans-serif; font-weight: 800; line-height: 1;">📊</div>
+        <div style="font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--green); margin-bottom: 12px;">Объём</div>
+        <div style="display: flex; align-items: baseline; gap: 8px; margin-bottom: 6px;">
+          <span style="font-family: 'Poppins', sans-serif; font-size: 48px; font-weight: 800; color: var(--dark); line-height: 1;">2 400</span>
+          <span style="font-family: 'Poppins', sans-serif; font-size: 20px; font-weight: 600; color: var(--mid-gray);">ключей</span>
+        </div>
+        <div style="font-size: 15px; color: var(--mid-gray);">обработаны → очищены → распределены</div>
+        <div style="margin-top: 14px; background: var(--green-soft); border-radius: 8px; padding: 8px 14px; font-size: 13px; color: #5a6d42; font-family: 'Poppins', sans-serif; font-weight: 500; display: inline-block;">8 кластеров на выходе</div>
+      </div>
+
+      <!-- Card 3: Consistency -->
+      <div style="background: white; border: 1px solid var(--light-gray); border-radius: 16px; padding: 32px 28px; box-shadow: var(--card-shadow); position: relative; overflow: hidden;">
+        <div style="position: absolute; top: -12px; right: -8px; font-size: 80px; opacity: 0.06; font-family: 'Poppins', sans-serif; font-weight: 800; line-height: 1;">🎯</div>
+        <div style="font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--blue); margin-bottom: 12px;">Консистентность</div>
+        <div style="display: flex; align-items: baseline; gap: 8px; margin-bottom: 6px;">
+          <span style="font-family: 'Poppins', sans-serif; font-size: 48px; font-weight: 800; color: var(--dark); line-height: 1;">100%</span>
+          <span style="font-family: 'Poppins', sans-serif; font-size: 20px; font-weight: 600; color: var(--mid-gray);">строк</span>
+        </div>
+        <div style="font-size: 15px; color: var(--mid-gray);">обработаны по одним и тем же правилам</div>
+        <div style="margin-top: 14px; background: var(--blue-soft); border-radius: 8px; padding: 8px 14px; font-size: 13px; color: #4a7ba8; font-family: 'Poppins', sans-serif; font-weight: 500; display: inline-block;">Без усталости и пропусков</div>
+      </div>
+
+      <!-- Card 4: Reuse -->
+      <div style="background: white; border: 1px solid var(--light-gray); border-radius: 16px; padding: 32px 28px; box-shadow: var(--card-shadow); position: relative; overflow: hidden;">
+        <div style="position: absolute; top: -12px; right: -8px; font-size: 80px; opacity: 0.06; font-family: 'Poppins', sans-serif; font-weight: 800; line-height: 1;">♻️</div>
+        <div style="font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--orange); margin-bottom: 12px;">Масштабируемость</div>
+        <div style="display: flex; align-items: baseline; gap: 8px; margin-bottom: 6px;">
+          <span style="font-family: 'Poppins', sans-serif; font-size: 48px; font-weight: 800; color: var(--dark); line-height: 1;">1</span>
+          <span style="font-family: 'Poppins', sans-serif; font-size: 20px; font-weight: 600; color: var(--mid-gray);">настройка</span>
+        </div>
+        <div style="font-size: 15px; color: var(--mid-gray);">Контекст задаётся один раз — работает на все гео</div>
+        <div style="margin-top: 14px; background: var(--orange-soft); border-radius: 8px; padding: 8px 14px; font-size: 13px; color: #a85a3a; font-family: 'Poppins', sans-serif; font-weight: 500; display: inline-block;">Новое гео = загрузить файл</div>
+      </div>
+
+    </div>
+
+    <!-- Bottom accent block -->
+    <div style="background: var(--dark); border-radius: 16px; padding: 28px 32px; margin-top: 8px; display: flex; align-items: center; gap: 24px;">
+      <div style="width: 56px; height: 56px; border-radius: 14px; background: rgba(217,119,87,0.15); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+        <span style="font-size: 26px;">💬</span>
+      </div>
+      <div>
+        <div style="font-family: 'Poppins', sans-serif; font-size: 17px; font-weight: 600; color: var(--light); margin-bottom: 4px;">Не промпты — естественный разговор</div>
+        <div style="font-size: 15px; color: var(--mid-gray); line-height: 1.5;">Вы описываете ситуацию как есть — какие конкуренты, какие критерии, какие нюансы. Как разговор с коллегой, только коллега обрабатывает 2 000 строк за минуту.</div>
+      </div>
+    </div>
+
+    <!-- Advanced teaser -->
+    <div style="margin-top: 32px; background: linear-gradient(135deg, rgba(106,155,204,0.08), rgba(217,119,87,0.08)); border: 1px dashed var(--mid-gray); border-radius: 14px; padding: 22px 28px; display: flex; align-items: center; gap: 20px;">
+      <div style="width: 44px; height: 44px; border-radius: 12px; background: var(--blue-soft); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+        <span style="font-size: 20px;">🚀</span>
+      </div>
+      <div style="flex: 1;">
+        <div style="font-family: 'Poppins', sans-serif; font-size: 15px; font-weight: 600; color: var(--dark); margin-bottom: 2px;">Продвинутый вариант: автоматический сбор данных</div>
+        <div style="font-size: 14px; color: #5a5850; line-height: 1.5;">Claude в режиме браузера сам заходит в ASO-тулу, находит конкурента с лучшим ранжированием по вашим ключам и скачивает выгрузки — вам остаётся только запустить очистку и кластеризацию.</div>
+      </div>
+      <a href="#advanced-browser-research" style="font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 600; color: var(--orange); text-decoration: none; white-space: nowrap; flex-shrink: 0;">Перейти к кейсу →</a>
+    </div>
+
+  </div>
+</section>
+
+<!-- ════════════════════ FOOTER ════════════════════ -->
+<div class="footer">
+  <div class="container">
+    AI-Assisted UA · Курс для специалистов по закупке трафика · Создано с <a href="https://claude.ai" target="_blank">Claude</a>
+  </div>
+</div>
+
+</body>
+</html>
