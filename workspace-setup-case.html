@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Кейс: Как настроить Claude под себя и не повторяться</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --dark: #141413;
+    --light: #faf9f5;
+    --mid-gray: #b0aea5;
+    --light-gray: #e8e6dc;
+    --orange: #d97757;
+    --blue: #6a9bcc;
+    --green: #788c5d;
+    --orange-soft: #f5e6de;
+    --blue-soft: #e3eef6;
+    --green-soft: #e8eddf;
+    --card-shadow: 0 1px 3px rgba(20,20,19,0.06), 0 8px 24px rgba(20,20,19,0.04);
+    --card-shadow-hover: 0 2px 6px rgba(20,20,19,0.08), 0 12px 32px rgba(20,20,19,0.06);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Lora', Georgia, serif;
+    background: var(--light);
+    color: var(--dark);
+    line-height: 1.7;
+    font-size: 17px;
+  }
+
+  /* ── Hero ── */
+  .hero {
+    background: var(--dark);
+    color: var(--light);
+    padding: 80px 0 72px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -120px; right: -80px;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(120,140,93,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -100px; left: -60px;
+    width: 350px; height: 350px;
+    background: radial-gradient(circle, rgba(106,155,204,0.1) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-inner {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 32px;
+    position: relative;
+    z-index: 1;
+  }
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(120,140,93,0.15);
+    border: 1px solid rgba(120,140,93,0.3);
+    color: var(--green);
+    padding: 6px 16px;
+    border-radius: 100px;
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 28px;
+  }
+  .hero-badge svg { width: 16px; height: 16px; }
+  .hero h1 {
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: clamp(28px, 4.5vw, 44px);
+    font-weight: 800;
+    line-height: 1.15;
+    margin-bottom: 20px;
+    letter-spacing: -0.5px;
+  }
+  .hero h1 span { color: var(--green); }
+  .hero-subtitle {
+    font-size: 19px;
+    color: var(--mid-gray);
+    max-width: 640px;
+    line-height: 1.6;
+  }
+
+  /* ── Metric banner ── */
+  .metric-banner {
+    background: white;
+    border: 1px solid var(--light-gray);
+    border-radius: 16px;
+    max-width: 860px;
+    margin: -36px auto 0;
+    padding: 28px 36px;
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr auto 1fr;
+    align-items: center;
+    gap: 0;
+    box-shadow: var(--card-shadow);
+  }
+  .metric-item { text-align: center; }
+  .metric-number {
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--dark);
+    line-height: 1.2;
+  }
+  .metric-number.accent-orange { color: var(--orange); }
+  .metric-number.accent-blue { color: var(--blue); }
+  .metric-number.accent-green { color: var(--green); }
+  .metric-label {
+    font-size: 14px;
+    color: var(--mid-gray);
+    margin-top: 4px;
+  }
+  .metric-divider {
+    width: 1px;
+    height: 48px;
+    background: var(--light-gray);
+  }
+
+  /* ── Container ── */
+  .container {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+
+  /* ── Section ── */
+  .section {
+    padding: 64px 0;
+  }
+  .section-label {
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 12px;
+  }
+  .section h2 {
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: clamp(22px, 3vw, 30px);
+    font-weight: 700;
+    line-height: 1.25;
+    margin-bottom: 20px;
+    color: var(--dark);
+  }
+  .section-intro {
+    font-size: 17px;
+    color: #5a5850;
+    max-width: 680px;
+    margin-bottom: 36px;
+  }
+
+  /* ── Pipeline ── */
+  .pipeline-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    position: relative;
+  }
+  .pipeline-step {
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    gap: 24px;
+    position: relative;
+  }
+  .step-indicator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .step-number {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Poppins', Arial, sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    color: white;
+    flex-shrink: 0;
+  }
+  .step-number.orange { background: var(--orange); }
+  .step-number.blue { background: var(--blue); }
+  .step-number.green { background: var(--green); }
+  .step-number.dark { background: var(--dark); }
+  .step-line {
+    width: 2px;
+    flex: 1;
+    background: var(--light-gray);
+    min-height: 24px;
+  }
+  .step-content {
+    padding-bottom: 36px;
+  }
+  .step-content h3 {
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    line-height: 1.3;
+    padding-top: 8px;
+  }
+  .step-content > p {
+    color: #5a5850;
+    margin-bottom: 12px;
+  }
+
+  /* ── Chat simulation ── */
+  .chat-block {
+    background: white;
+    border: 1px solid var(--light-gray);
+    border-radius: 14px;
+    overflow: hidden;
+    margin: 16px 0;
+    box-shadow: var(--card-shadow);
+  }
+  .chat-header {
+    background: var(--dark);
+    color: var(--light);
+    padding: 10px 18px;
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .chat-header .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--green);
+  }
+  .chat-msg {
+    padding: 16px 20px;
+    border-bottom: 1px solid #f0efe8;
+  }
+  .chat-msg:last-child { border-bottom: none; }
+  .chat-msg.user { background: #fdfcfa; }
+  .chat-msg.ai { background: white; }
+  .chat-sender {
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+  }
+  .chat-sender.user-name { color: var(--green); }
+  .chat-sender.ai-name { color: var(--orange); }
+  .chat-text {
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--dark);
+  }
+  .chat-text code {
+    background: var(--light-gray);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+  }
+
+  /* ── Key Insight callout ── */
+  .insight-callout {
+    background: var(--green-soft);
+    border-left: 4px solid var(--green);
+    border-radius: 0 12px 12px 0;
+    padding: 20px 24px;
+    margin: 20px 0;
+  }
+  .insight-callout strong {
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--green);
+    display: block;
+    margin-bottom: 4px;
+  }
+  .insight-callout p {
+    font-size: 15px;
+    color: #3a4a3a;
+  }
+  .insight-callout.orange {
+    background: var(--orange-soft);
+    border-left-color: var(--orange);
+  }
+  .insight-callout.orange strong { color: var(--orange); }
+  .insight-callout.orange p { color: #5a4a3a; }
+  .insight-callout.blue {
+    background: var(--blue-soft);
+    border-left-color: var(--blue);
+  }
+  .insight-callout.blue strong { color: var(--blue); }
+  .insight-callout.blue p { color: #3a4a5a; }
+
+  /* ── Principle box ── */
+  .principle-box {
+    background: white;
+    border: 1px solid var(--light-gray);
+    border-radius: 14px;
+    padding: 24px 28px;
+    margin: 20px 0;
+    box-shadow: var(--card-shadow);
+  }
+  .principle-box h4 {
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: var(--dark);
+  }
+  .principle-box p, .principle-box li {
+    color: #5a5850;
+    font-size: 15px;
+  }
+  .principle-box ul {
+    margin: 10px 0 0 18px;
+  }
+  .principle-box ul li {
+    margin-bottom: 6px;
+  }
+
+  /* ── Code/template block ── */
+  .template-block {
+    background: #1a1a19;
+    border-radius: 12px;
+    overflow: hidden;
+    margin: 16px 0;
+    box-shadow: var(--card-shadow);
+  }
+  .template-header {
+    padding: 10px 18px;
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--mid-gray);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .template-body {
+    padding: 18px 22px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 13px;
+    line-height: 1.8;
+    color: #d4d2ca;
+    white-space: pre-wrap;
+  }
+  .template-body .comment { color: #6a8a5a; }
+  .template-body .key { color: var(--blue); }
+  .template-body .val { color: var(--orange); }
+
+  /* ── Visual structure diagram ── */
+  .structure-diagram {
+    background: white;
+    border: 1px solid var(--light-gray);
+    border-radius: 14px;
+    padding: 28px;
+    margin: 20px 0;
+    box-shadow: var(--card-shadow);
+  }
+  .struct-project {
+    background: var(--dark);
+    color: var(--light);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 12px;
+    font-family: 'Poppins', Arial, sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .struct-project .icon { font-size: 20px; }
+  .struct-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .struct-item {
+    border: 1px solid var(--light-gray);
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 14px;
+  }
+  .struct-item .label {
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+  }
+  .struct-item .label.green { color: var(--green); }
+  .struct-item .label.blue { color: var(--blue); }
+  .struct-item .label.orange { color: var(--orange); }
+  .struct-item .name {
+    font-family: 'Poppins', Arial, sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    color: var(--dark);
+  }
+  .struct-item .desc {
+    font-size: 12px;
+    color: var(--mid-gray);
+    margin-top: 2px;
+  }
+  .struct-section-label {
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--mid-gray);
+    margin: 16px 0 8px 4px;
+  }
+
+  /* ── Star callout (for the key insight) ── */
+  .star-callout {
+    background: linear-gradient(135deg, #1a1a19 0%, #2a2a28 100%);
+    border: 2px solid var(--orange);
+    border-radius: 16px;
+    padding: 28px 28px;
+    margin: 24px 0;
+    color: var(--light);
+  }
+  .star-callout h4 {
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--orange);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .star-callout p {
+    font-size: 15px;
+    color: var(--mid-gray);
+    line-height: 1.7;
+    margin-bottom: 10px;
+  }
+  .star-callout p:last-child { margin-bottom: 0; }
+  .star-callout .example {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-top: 14px;
+    font-size: 14px;
+  }
+  .star-callout .example .good {
+    color: var(--green);
+    font-family: 'Poppins', Arial, sans-serif;
+    font-weight: 500;
+    font-size: 12px;
+    margin-bottom: 4px;
+  }
+  .star-callout .example .bad {
+    color: #c97;
+    font-family: 'Poppins', Arial, sans-serif;
+    font-weight: 500;
+    font-size: 12px;
+    margin-bottom: 4px;
+  }
+  .star-callout .example .msg {
+    color: #d4d2ca;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  /* ── Settings toggle visual ── */
+  .settings-visual {
+    background: white;
+    border: 1px solid var(--light-gray);
+    border-radius: 14px;
+    overflow: hidden;
+    margin: 16px 0;
+    box-shadow: var(--card-shadow);
+  }
+  .settings-header {
+    background: var(--dark);
+    color: var(--light);
+    padding: 10px 18px;
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .settings-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    border-bottom: 1px solid #f0efe8;
+  }
+  .settings-row:last-child { border-bottom: none; }
+  .settings-row .left {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .settings-row .setting-name {
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--dark);
+  }
+  .settings-row .setting-desc {
+    font-size: 13px;
+    color: var(--mid-gray);
+  }
+  .toggle {
+    width: 44px; height: 24px;
+    background: var(--green);
+    border-radius: 12px;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .toggle::after {
+    content: '';
+    width: 18px; height: 18px;
+    background: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 3px; right: 3px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  }
+  .toggle.off {
+    background: var(--light-gray);
+  }
+  .toggle.off::after {
+    right: auto;
+    left: 3px;
+  }
+
+  /* ── Advanced Tips ── */
+  .tips-section {
+    background: linear-gradient(135deg, #1a1a19 0%, #2a2a28 100%);
+    border-radius: 20px;
+    padding: 44px 40px;
+    margin: 20px 0 0;
+    color: var(--light);
+  }
+  .tips-section .section-label { color: var(--green); }
+  .tips-section h2 { color: var(--light); }
+  .tip-card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+    padding: 24px;
+    margin-bottom: 16px;
+    transition: border-color 0.2s;
+  }
+  .tip-card:hover {
+    border-color: rgba(120,140,93,0.3);
+  }
+  .tip-card:last-child { margin-bottom: 0; }
+  .tip-icon {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 14px;
+    font-size: 18px;
+  }
+  .tip-icon.orange { background: rgba(217,119,87,0.15); }
+  .tip-icon.blue { background: rgba(106,155,204,0.15); }
+  .tip-icon.green { background: rgba(120,140,93,0.15); }
+  .tip-card h4 {
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--light);
+  }
+  .tip-card p {
+    font-size: 15px;
+    color: var(--mid-gray);
+    line-height: 1.6;
+  }
+  .tip-card .highlight {
+    color: var(--green);
+    font-weight: 500;
+  }
+
+  /* ── Footer ── */
+  .footer {
+    text-align: center;
+    padding: 48px 0 40px;
+    color: var(--mid-gray);
+    font-size: 14px;
+    border-top: 1px solid var(--light-gray);
+  }
+  .footer a { color: var(--orange); text-decoration: none; }
+
+  /* ── Responsive ── */
+  @media (max-width: 640px) {
+    .metric-banner {
+      grid-template-columns: 1fr;
+      gap: 16px;
+      padding: 24px;
+    }
+    .metric-divider { width: 100%; height: 1px; }
+    .tips-section { padding: 28px 20px; }
+    .pipeline-step { grid-template-columns: 44px 1fr; gap: 16px; }
+    .struct-row { grid-template-columns: 1fr; }
+    .summary-grid { grid-template-columns: 1fr !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ════════════════════ HERO ════════════════════ -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+      Кейс #3 — Фундамент
+    </div>
+    <h1>Настройте Claude один раз —<br>и <span>не повторяйтесь</span> больше</h1>
+    <p class="hero-subtitle">Проект, контекстные файлы, инструкции и правильная организация чатов — чтобы Claude знал ваши проекты, метрики и стиль работы с первого сообщения.</p>
+  </div>
+</section>
+
+<!-- ════════════════════ METRICS ════════════════════ -->
+<div class="metric-banner">
+  <div class="metric-item">
+    <div class="metric-number">1×</div>
+    <div class="metric-label">настройка</div>
+  </div>
+  <div class="metric-divider"></div>
+  <div class="metric-item">
+    <div class="metric-number accent-green">0</div>
+    <div class="metric-label">повторных объяснений</div>
+  </div>
+  <div class="metric-divider"></div>
+  <div class="metric-item">
+    <div class="metric-number accent-blue">∞</div>
+    <div class="metric-label">сессий с контекстом</div>
+  </div>
+</div>
+
+<!-- ════════════════════ SUMMARY ════════════════════ -->
+<section class="section" style="padding-top: 0;">
+  <div class="container">
+    <div class="section-label">Результат</div>
+    <h2>Что вы получите после настройки</h2>
+
+    <div class="summary-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 32px 0;">
+
+      <div style="background: white; border: 1px solid var(--light-gray); border-radius: 16px; padding: 32px 28px; box-shadow: var(--card-shadow); position: relative; overflow: hidden;">
+        <div style="position: absolute; top: -12px; right: -8px; font-size: 80px; opacity: 0.06; font-family: 'Poppins', sans-serif; font-weight: 800; line-height: 1;">🧠</div>
+        <div style="font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--green); margin-bottom: 12px;">Контекст</div>
+        <div style="display: flex; align-items: baseline; gap: 8px; margin-bottom: 6px;">
+          <span style="font-family: 'Poppins', sans-serif; font-size: 48px; font-weight: 800; color: var(--dark); line-height: 1;">1</span>
+          <span style="font-family: 'Poppins', sans-serif; font-size: 20px; font-weight: 600; color: var(--mid-gray);">раз</span>
+        </div>
+        <div style="font-size: 15px; color: var(--mid-gray);">задаёте контекст — работает во всех чатах</div>
+        <div style="margin-top: 14px; background: var(--green-soft); border-radius: 8px; padding: 8px 14px; font-size: 13px; color: #5a6d42; font-family: 'Poppins', sans-serif; font-weight: 500; display: inline-block;">Проекты, KPI, конкуренты</div>
+      </div>
+
+      <div style="background: white; border: 1px solid var(--light-gray); border-radius: 16px; padding: 32px 28px; box-shadow: var(--card-shadow); position: relative; overflow: hidden;">
+        <div style="position: absolute; top: -12px; right: -8px; font-size: 80px; opacity: 0.06; font-family: 'Poppins', sans-serif; font-weight: 800; line-height: 1;">🚫</div>
+        <div style="font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--orange); margin-bottom: 12px;">Повторения</div>
+        <div style="display: flex; align-items: baseline; gap: 8px; margin-bottom: 6px;">
+          <span style="font-family: 'Poppins', sans-serif; font-size: 48px; font-weight: 800; color: var(--dark); line-height: 1;">0</span>
+        </div>
+        <div style="font-size: 15px; color: var(--mid-gray);">повторных объяснений «что это за приложение»</div>
+        <div style="margin-top: 14px; background: var(--orange-soft); border-radius: 8px; padding: 8px 14px; font-size: 13px; color: #a85a3a; font-family: 'Poppins', sans-serif; font-weight: 500; display: inline-block;">Сразу к делу</div>
+      </div>
+
+      <div style="background: white; border: 1px solid var(--light-gray); border-radius: 16px; padding: 32px 28px; box-shadow: var(--card-shadow); position: relative; overflow: hidden;">
+        <div style="position: absolute; top: -12px; right: -8px; font-size: 80px; opacity: 0.06; font-family: 'Poppins', sans-serif; font-weight: 800; line-height: 1;">🔍</div>
+        <div style="font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--blue); margin-bottom: 12px;">Память между чатами</div>
+        <div style="display: flex; align-items: baseline; gap: 8px; margin-bottom: 6px;">
+          <span style="font-family: 'Poppins', sans-serif; font-size: 44px; font-weight: 800; color: var(--dark); line-height: 1;">Search</span>
+        </div>
+        <div style="font-size: 15px; color: var(--mid-gray);">по прошлым чатам в проекте</div>
+        <div style="margin-top: 14px; background: var(--blue-soft); border-radius: 8px; padding: 8px 14px; font-size: 13px; color: #4a7ba8; font-family: 'Poppins', sans-serif; font-weight: 500; display: inline-block;">Ключевая фича — подробнее ниже ↓</div>
+      </div>
+
+      <div style="background: white; border: 1px solid var(--light-gray); border-radius: 16px; padding: 32px 28px; box-shadow: var(--card-shadow); position: relative; overflow: hidden;">
+        <div style="position: absolute; top: -12px; right: -8px; font-size: 80px; opacity: 0.06; font-family: 'Poppins', sans-serif; font-weight: 800; line-height: 1;">🗂</div>
+        <div style="font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--green); margin-bottom: 12px;">Навигация</div>
+        <div style="display: flex; align-items: baseline; gap: 8px; margin-bottom: 6px;">
+          <span style="font-family: 'Poppins', sans-serif; font-size: 48px; font-weight: 800; color: var(--dark); line-height: 1;">Чаты</span>
+        </div>
+        <div style="font-size: 15px; color: var(--mid-gray);">организованы по задачам, легко найти нужный</div>
+        <div style="margin-top: 14px; background: var(--green-soft); border-radius: 8px; padding: 8px 14px; font-size: 13px; color: #5a6d42; font-family: 'Poppins', sans-serif; font-weight: 500; display: inline-block;">Не каша из 100 безымянных диалогов</div>
+      </div>
+
+    </div>
+
+    <div style="background: var(--dark); border-radius: 14px; padding: 24px 28px; display: flex; align-items: center; gap: 16px;">
+      <span style="font-size: 28px;">⚡</span>
+      <div>
+        <div style="font-family: 'Poppins', sans-serif; font-size: 16px; font-weight: 600; color: var(--light); margin-bottom: 2px;">30 минут настройки = месяцы эффективной работы</div>
+        <div style="font-size: 14px; color: var(--mid-gray);">Всё ниже делается один раз. Дальше вы просто работаете — Claude уже знает ваш контекст.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════ FRICTION BARRIER ════════════════════ -->
+<section class="section" style="padding-top: 0; border-top: 1px solid var(--light-gray);">
+  <div class="container">
+    <div class="section-label">Честно о барьерах</div>
+    <h2>«У меня уже есть контекст в других чатах — не хочу начинать с нуля»</h2>
+
+    <p class="section-intro">Знакомо? Вы уже что-то обсуждали с AI-моделью, где-то есть полезные чаты, и мысль о переносе всего контекста в новое место вызывает сопротивление. Это нормально — и вот что снимает этот барьер.</p>
+
+    <div class="principle-box" style="border-left: 3px solid var(--green);">
+      <h4>🎙 Голосовой ввод решает 80% проблемы</h4>
+      <p>Вам не нужно печатать контекст. Надиктуйте голосом — это занимает 5-10 минут на проект. Инструменты вроде <strong><a href="https://goodsnooze.gumroad.com/l/macwhisper" target="_blank" style="color: var(--green); text-decoration: underline;">MacWhisper</a></strong> (бесплатный тариф) отлично распознают даже микс русского с англицизмами: «ROAS D3», «CPP», «screen mirroring» — всё запишется корректно на английском, остальное на русском.</p>
+    </div>
+
+    <div class="principle-box" style="border-left: 3px solid var(--orange);">
+      <h4>🧊 Первый раз — тупишь, и это нормально</h4>
+      <p>При первой надиктовке вы будете думать «а что вообще рассказать?». Лайфхак: <strong>попросите Claude дать вам базовую структуру</strong> — отправьте голосовое сообщение «я хочу скормить тебе контекст по моему проекту, дай мне чеклист что тебе нужно знать» — и дальше просто отвечайте на пункты. Со временем привыкнете и будете надиктовывать свободно.</p>
+    </div>
+
+    <div class="star-callout" style="margin-top: 24px;">
+      <h4>💡 Аха-момент: бесшовный опыт без затупов</h4>
+      <p>Реальный переломный момент наступает когда вы видите что Claude <strong style="color: var(--light);">отдаёт файлы, верстает лендинги, считывает ваши Excel-выгрузки</strong> — всё без ошибок, с первого раза. Это как второй мозг, только быстрее.</p>
+      <p>И обратная сторона: если AI-модель хоть раз затупит при выдаче файла или считывании данных — доверие падает моментально. Появляется негативный bias, который потом мешает вообще пробовать. Поэтому выбор инструмента, который работает стабильно — критичен.</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════ CONTEXT ════════════════════ -->
+<section class="section" style="padding-top: 0; border-top: 1px solid var(--light-gray);">
+  <div class="container">
+    <div class="section-label">Зачем это нужно</div>
+    <h2>Проблема: каждый новый чат — с чистого листа</h2>
+
+    <p class="section-intro">Без настройки каждый разговор с AI начинается одинаково: «У меня есть приложение для screen mirroring, мои конкуренты — X, Y, Z, мы закупаем трафик через ASA, KPI — ROAS D3 не ниже 15%...». Через неделю это надоедает, и вы начинаете давать AI-модели меньше контекста — а значит получать менее точные ответы. В Claude эта проблема решается системой проектов.</p>
+
+    <div class="principle-box">
+      <h4>Принцип: 1 профессиональная роль = 1 проект в Claude</h4>
+      <p>Не нужно дробить отдельные приложения или каналы трафика на разные проекты Claude. Один проект «UA Specialist» покрывает все ваши рабочие приложения — потому что контекст между ними связан: подходы переносятся, конкуренты пересекаются, а метрики одни и те же. Отдельный проект — для личных дел, если хотите разделить.</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════ PIPELINE ════════════════════ -->
+<section class="section" style="padding-top: 0;">
+  <div class="container">
+    <div class="section-label">Пошаговый процесс</div>
+    <h2>5 шагов — от пустого Claude до рабочего инструмента</h2>
+
+    <div class="pipeline-steps">
+
+      <!-- ─── Step 1: Create Project ─── -->
+      <div class="pipeline-step">
+        <div class="step-indicator">
+          <div class="step-number green">1</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-content">
+          <h3>Создайте проект</h3>
+          <p>В Claude нажмите «Projects» → «Create Project». Назовите его по вашей роли, например «UA Specialist» или «Performance Marketing». Все ваши рабочие чаты будут жить внутри этого проекта.</p>
+
+          <div class="structure-diagram">
+            <div class="struct-project">
+              <span class="icon">📁</span> Проект: UA Specialist
+            </div>
+            <div style="padding-left: 20px;">
+              <div class="struct-section-label">📌 Инструкции проекта</div>
+              <div class="struct-item" style="margin-bottom: 10px; border-left: 3px solid var(--orange);">
+                <div class="label orange">Instructions</div>
+                <div class="name">Правила поведения AI в проекте</div>
+                <div class="desc">Шаг 2 — подробнее ниже</div>
+              </div>
+
+              <div class="struct-section-label">📎 Контекстные файлы</div>
+              <div class="struct-row">
+                <div class="struct-item">
+                  <div class="label green">Файл</div>
+                  <div class="name">Smart Mirror</div>
+                  <div class="desc">Описание, каналы, KPI, конкуренты</div>
+                </div>
+                <div class="struct-item">
+                  <div class="label green">Файл</div>
+                  <div class="name">Heart Rate App</div>
+                  <div class="desc">Описание, каналы, KPI, конкуренты</div>
+                </div>
+              </div>
+              <div class="struct-row">
+                <div class="struct-item">
+                  <div class="label green">Файл</div>
+                  <div class="name">EveryScan</div>
+                  <div class="desc">Описание, каналы, KPI, конкуренты</div>
+                </div>
+                <div class="struct-item">
+                  <div class="label green">Файл</div>
+                  <div class="name">Правила кластеризации</div>
+                  <div class="desc">Общие для всех проектов</div>
+                </div>
+              </div>
+
+              <div class="struct-section-label">💬 Чаты (по задачам)</div>
+              <div class="struct-row">
+                <div class="struct-item">
+                  <div class="label blue">Чат</div>
+                  <div class="name">Weekly Reports</div>
+                  <div class="desc">Все проекты, каждая пятница</div>
+                </div>
+                <div class="struct-item">
+                  <div class="label blue">Чат</div>
+                  <div class="name">Семантика Smart Mirror BR</div>
+                  <div class="desc">Кластеризация, очистка</div>
+                </div>
+              </div>
+              <div class="struct-row">
+                <div class="struct-item">
+                  <div class="label blue">Чат</div>
+                  <div class="name">CPP-тесты Smart Mirror</div>
+                  <div class="desc">Анализ перформа CPP</div>
+                </div>
+                <div class="struct-item">
+                  <div class="label blue">Чат</div>
+                  <div class="name">Конкуренты EveryScan</div>
+                  <div class="desc">Анализ, скриншоты, выводы</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="insight-callout">
+            <strong>Почему не дробить по приложениям?</strong>
+            <p>Приложения пересекаются: удачный подход к CPP из Smart Mirror можно протестировать на EveryScan, конкурент из одного проекта может оказаться релевантным другому, правила кластеризации общие. Один проект = весь контекст доступен.</p>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- ─── Step 2: Project Instructions ─── -->
+      <div class="pipeline-step">
+        <div class="step-indicator">
+          <div class="step-number orange">2</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-content">
+          <h3>Задайте инструкции проекта</h3>
+          <p>Инструкции проекта — это текст, который Claude видит в каждом чате внутри проекта. Сюда идут правила, которые вы хотите применять всегда, не повторяя каждый раз.</p>
+
+          <div class="template-block">
+            <div class="template-header">📌 Project Instructions — пример</div>
+            <div class="template-body"><span class="comment">## Как работать с семантикой</span>
+<span class="val">При работе с семантикой и кластеризацией — если замечаешь
+паттерн, кластер или группировку, которую я не задала явно,
+всегда предлагай. Если считаешь что ключ лучше подходит
+в другой кластер чем тот что следует из правил — скажи
+почему. Если видишь локальные слова-синонимы или необычные
+конструкции в конкретном гео — обрати на них внимание.
+Не ограничивайся только тем что я попросила.</span>
+
+<span class="comment">## Общие правила</span>
+<span class="val">Если видишь проблемы в моей логике либо знаешь свежие
+или фундаментальные идеи, которые я не использую, но
+которые могут быть применимы — предлагай.</span></div>
+          </div>
+
+          <div class="insight-callout orange">
+            <strong>Инструкции ≠ контекст</strong>
+            <p>Инструкции — это поведение AI (как он себя ведёт). Контекст — это знания (что он знает о ваших проектах). Не путайте: описание приложения идёт в контекстный файл, а не в инструкции.</p>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- ─── Step 3: Context Files ─── -->
+      <div class="pipeline-step">
+        <div class="step-indicator">
+          <div class="step-number green">3</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-content">
+          <h3>Создайте контекстный файл на каждое приложение</h3>
+          <p>Один файл = один проект/приложение. Надиктуйте голосом — не нужно структурировать идеально. Claude разберётся. Но вот шаблон-подсказка, чтобы не забыть ничего важного:</p>
+
+          <div class="template-block">
+            <div class="template-header">📎 Шаблон контекстного файла — надиктуйте по пунктам</div>
+            <div class="template-body"><span class="key">Название и ссылка</span>
+<span class="val">Smart Mirror — https://apps.apple.com/us/app/...</span>
+<span class="comment">(чтобы Claude мог посмотреть листинг при необходимости)</span>
+
+<span class="key">Что делает приложение</span>
+<span class="val">Позволяет миррорить экран iPhone на Smart TV — Samsung,
+LG, Fire, Roku и другие. Работает через Wi-Fi.</span>
+
+<span class="key">Каналы закупки и мой фокус</span>
+<span class="val">Основной канал — Apple Search Ads. Я отвечаю за ASA.
+Бюджет ~$150K/мес. Также есть Google UAC, но его ведёт
+другой специалист.</span>
+
+<span class="key">KPI</span>
+<span class="val">ROAS D3 ≥ 15% (Tier 1: US, AU), ≥ 20% (остальные гео).
+CPI target зависит от гео. Триал 3 дня → недельная подписка.</span>
+
+<span class="key">Прямые конкуренты</span>
+<span class="val">AirScreen, Replica, LetsView, Screen Mirroring App by X</span>
+
+<span class="key">Текущий фокус / что сейчас тестируем</span>
+<span class="val">Расширение на MENA (Kuwait, Bahrain, Qatar). Тест новой
+CPP с фокусом на бренды ТВ. Samsung-кластер — приоритет.</span>
+
+<span class="key">История — что работало / не работало</span>
+<span class="val">Branded keywords (Samsung, LG) конвертят лучше generic.
+Discovery-кампании дают объём через low volume search terms.
+dlna orange (FR) — неочевидный ключ, окупается за 3 мес.</span></div>
+          </div>
+
+          <div class="insight-callout">
+            <strong>Не парьтесь с форматированием</strong>
+            <p>Надиктуйте голосом — Claude понимает неструктурированный текст. Шаблон выше — подсказка чтобы ничего не забыть, а не обязательный формат. Можно просто наговорить 5 минут «thoughts dump» и загрузить как есть.</p>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- ─── Step 4: Chat Organization ─── -->
+      <div class="pipeline-step">
+        <div class="step-indicator">
+          <div class="step-number blue">4</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-content">
+          <h3>Организуйте чаты по задачам, а не по приложениям</h3>
+          <p>Не делайте «1 чат = 1 приложение». Claude ориентируется по контексту файлов, а не по чатам. Чаты удобнее организовывать по типу задачи — так проще и вам, и Claude.</p>
+
+          <div class="principle-box">
+            <h4>Примеры чатов по задачам</h4>
+            <ul>
+              <li><strong>Weekly Reports</strong> — сюда скидываете данные в течение недели, в пятницу просите собрать отчёт. Все проекты — в одном чате.</li>
+              <li><strong>Семантика Smart Mirror BR</strong> — загрузка выгрузок, кластеризация, очистка ключей для конкретного гео.</li>
+              <li><strong>CPP-тесты Smart Mirror</strong> — анализ перформа CPP, сравнение метрик, выводы.</li>
+              <li><strong>Конкуренты EveryScan</strong> — скриншоты листингов, анализ отзывов, преимущества и слабости.</li>
+              <li><strong>Семантика Heart Rate US</strong> — отдельная задача по ключам для конкретного проекта и гео.</li>
+            </ul>
+          </div>
+
+          <div class="chat-block">
+            <div class="chat-header"><span class="dot"></span> Пример — Claude уже знает контекст</div>
+            <div class="chat-msg user">
+              <div class="chat-sender user-name">Вы</div>
+              <div class="chat-text">Вот выгрузка FoxData для Smart Mirror по гео Kuwait. Собери samsung-кластер с SAP ≥ 5.</div>
+            </div>
+            <div class="chat-msg ai">
+              <div class="chat-sender ai-name">Claude</div>
+              <div class="chat-text">Загрузила файл. Из контекста проекта вижу что прямые конкуренты Smart Mirror — AirScreen, Replica, LetsView, Screen Mirroring App by X. Буду проверять их наличие в топ-5 органики для неочевидных ключей. Правила кластеризации: samsung включает smart view, smartthings, allshare. Начинаю обработку.</div>
+            </div>
+          </div>
+
+          <div class="insight-callout">
+            <strong>Вы не объясняли ни конкурентов, ни правила — Claude взял их из контекстных файлов</strong>
+            <p>Всё что вы надиктовали в шаге 3 — конкуренты, правила кластеризации, KPI — Claude видит автоматически в каждом чате проекта. Вы загружаете файл и сразу к делу.</p>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- ─── Step 5: Settings & Key Feature ─── -->
+      <div class="pipeline-step">
+        <div class="step-indicator">
+          <div class="step-number dark">5</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-content">
+          <h3>Включите «Search and reference past chats» — и используйте правильно</h3>
+          <p>Это настройка, которая позволяет Claude искать по вашим прошлым чатам внутри проекта. Без неё каждый чат — изолирован. С ней — Claude может достать информацию из других чатов.</p>
+
+          <div class="settings-visual">
+            <div class="settings-header">⚙️ Settings → Features</div>
+            <div class="settings-row">
+              <div class="left">
+                <div class="setting-name">Search and reference past chats</div>
+                <div class="setting-desc">Claude может искать по прошлым разговорам в проекте</div>
+              </div>
+              <div class="toggle"></div>
+            </div>
+            <div class="settings-row">
+              <div class="left">
+                <div class="setting-name">Memory</div>
+                <div class="setting-desc">Claude запоминает ключевые факты между сессиями</div>
+              </div>
+              <div class="toggle"></div>
+            </div>
+          </div>
+
+          <!-- ★ THE KEY INSIGHT ★ -->
+          <div class="star-callout">
+            <h4>⚡ Ключевой нюанс — без этого фича не работает</h4>
+            <p>«Search and reference past chats» — это <strong style="color: var(--light);">не автоматическая память между чатами</strong>. Claude не «помнит всё» из прошлых разговоров по умолчанию. Он <em>ищет</em> по ним — но только когда вы <strong style="color: var(--light);">явно ссылаетесь на прошлое</strong>.</p>
+
+            <p>Это значит: чтобы Claude подтянул данные из другого чата, вам нужно дать ему триггер — упомянуть прошлый контекст или задать вопрос, который подразумевает информацию из прошлых разговоров.</p>
+
+            <div class="example">
+              <div class="good">✓ Работает — явная ссылка на прошлое</div>
+              <div class="msg">«В прошлом отчёте мы видели ROAS D3 14% по Smart Mirror US — какая динамика на этой неделе?»</div>
+            </div>
+            <div class="example" style="margin-top: 10px;">
+              <div class="good">✓ Работает — вопрос подразумевающий прошлый контекст</div>
+              <div class="msg">«Какие ключи мы добавляли в samsung-кластер BR в прошлый раз?»</div>
+            </div>
+            <div class="example" style="margin-top: 10px;">
+              <div class="good">✓ Работает — запрос динамики</div>
+              <div class="msg">«Как менялся CPI по Heart Rate за последние 3 отчёта?»</div>
+            </div>
+            <div class="example" style="margin-top: 10px;">
+              <div class="bad">✗ Не работает — Claude не подтянет прошлое автоматически</div>
+              <div class="msg">«Собери отчёт за неделю» <span style="color: #886;">(если данные были в другом чате и вы не упомянули это)</span></div>
+            </div>
+          </div>
+
+          <div class="insight-callout blue">
+            <strong>Практический вывод</strong>
+            <p>Ведите weekly-отчёты в одном чате — тогда вся история метрик будет в контексте. А когда хотите подтянуть данные из другого чата — просто упомяните прошлое: «как мы обсуждали», «в чате по конкурентам мы нашли», «по данным из прошлого анализа CPP». Этого достаточно чтобы Claude нашёл нужный контекст.</p>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /pipeline-steps -->
+  </div>
+</section>
+
+
+<!-- ════════════════════ ADVANCED TIPS ════════════════════ -->
+<section class="section" style="padding-top: 0;">
+  <div class="container">
+    <div class="tips-section">
+      <div class="section-label">Advanced Tips</div>
+      <h2>Как получить ещё больше от этой системы</h2>
+
+      <!-- Tip 1 -->
+      <div class="tip-card">
+        <div class="tip-icon green">📈</div>
+        <h4>Используйте weekly-чат как аналитический инструмент</h4>
+        <p>Если вы ведёте все отчёты в одном чате, Claude накапливает историю метрик по неделям. Попросите: «подсвети проекты где ROAS D3 падает три недели подряд» или «какие победы за последний месяц можно презентовать руководству». <span class="highlight">Данные уже в контексте — Claude просто анализирует их</span>.</p>
+      </div>
+
+      <!-- Tip 2 -->
+      <div class="tip-card">
+        <div class="tip-icon blue">🔗</div>
+        <h4>Подключите Slack как коннектор</h4>
+        <p>Если ваши рабочие обсуждения, статусы и решения живут в Slack — подключите его. Claude сможет считать ваши сообщения за неделю и <span class="highlight">автоматически собрать список выполненных задач</span> для отчёта, без ручного вспоминания «а что я делал во вторник».</p>
+      </div>
+
+      <!-- Tip 3 -->
+      <div class="tip-card">
+        <div class="tip-icon orange">🔄</div>
+        <h4>Переносите подходы между приложениями</h4>
+        <p>Один проект Claude для всех приложений — это не только удобство, но и стратегия. Если CPP с фокусом на бренды ТВ сработала на Smart Mirror — <span class="highlight">попросите Claude адаптировать подход для другого приложения</span>. Весь контекст обоих проектов уже на месте.</p>
+      </div>
+
+      <!-- Tip 4 -->
+      <div class="tip-card">
+        <div class="tip-icon green">📎</div>
+        <h4>Обновляйте контекстные файлы по мере изменений</h4>
+        <p>Сменился KPI, добавился новый канал закупки, нашли нового конкурента — обновите файл. Это занимает 2 минуты, а Claude <span class="highlight">сразу начнёт учитывать обновлённый контекст</span> во всех новых чатах. Не нужно «переобучать» — просто поправьте файл.</p>
+      </div>
+
+      <!-- Tip 5 -->
+      <div class="tip-card">
+        <div class="tip-icon blue">🌐</div>
+        <h4>Ссылка на приложение — не просто для справки</h4>
+        <p>Если в контекстном файле есть ссылка на App Store / сайт, Claude может зайти и посмотреть актуальный листинг: текущие скриншоты, описание, отзывы. Полезно когда вы обсуждаете CPP-тесты или конкурентный анализ — <span class="highlight">Claude видит живую версию, а не ваше описание двухмесячной давности</span>.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════ FOOTER ════════════════════ -->
+<footer class="footer">
+  AI-Assisted UA · Курс для специалистов по закупке трафика · Создано с <a href="https://claude.ai" target="_blank">Claude</a>
+</footer>
+
+</body>
+</html>

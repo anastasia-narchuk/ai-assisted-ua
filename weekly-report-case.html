@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Кейс: Еженедельный отчёт за 10 минут вместо полутора часов</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --dark: #141413;
+    --light: #faf9f5;
+    --mid-gray: #b0aea5;
+    --light-gray: #e8e6dc;
+    --orange: #d97757;
+    --blue: #6a9bcc;
+    --green: #788c5d;
+    --orange-soft: #f5e6de;
+    --blue-soft: #e3eef6;
+    --green-soft: #e8eddf;
+    --card-shadow: 0 1px 3px rgba(20,20,19,0.06), 0 8px 24px rgba(20,20,19,0.04);
+    --card-shadow-hover: 0 2px 6px rgba(20,20,19,0.08), 0 12px 32px rgba(20,20,19,0.06);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Lora', Georgia, serif;
+    background: var(--light);
+    color: var(--dark);
+    line-height: 1.7;
+    font-size: 17px;
+  }
+
+  /* ── Hero ── */
+  .hero {
+    background: var(--dark);
+    color: var(--light);
+    padding: 80px 0 72px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -120px; right: -80px;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(106,155,204,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -100px; left: -60px;
+    width: 350px; height: 350px;
+    background: radial-gradient(circle, rgba(217,119,87,0.1) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-inner {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 32px;
+    position: relative;
+    z-index: 1;
+  }
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(106,155,204,0.15);
+    border: 1px solid rgba(106,155,204,0.3);
+    color: var(--blue);
+    padding: 6px 16px;
+    border-radius: 100px;
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 28px;
+  }
+  .hero-badge svg { width: 16px; height: 16px; }
+  .hero h1 {
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: clamp(28px, 4.5vw, 44px);
+    font-weight: 800;
+    line-height: 1.15;
+    margin-bottom: 20px;
+    letter-spacing: -0.5px;
+  }
+  .hero h1 span { color: var(--blue); }
+  .hero-subtitle {
+    font-size: 19px;
+    color: var(--mid-gray);
+    max-width: 640px;
+    line-height: 1.6;
+  }
+
+  /* ── Metric banner ── */
+  .metric-banner {
+    background: white;
+    border: 1px solid var(--light-gray);
+    border-radius: 16px;
+    max-width: 860px;
+    margin: -36px auto 0;
+    padding: 28px 36px;
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr auto 1fr;
+    align-items: center;
+    gap: 0;
+    box-shadow: var(--card-shadow);
+  }
+  .metric-item { text-align: center; }
+  .metric-number {
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--dark);
+    line-height: 1.2;
+  }
+  .metric-number.accent-orange { color: var(--orange); }
+  .metric-number.accent-blue { color: var(--blue); }
+  .metric-number.accent-green { color: var(--green); }
+  .metric-label {
+    font-size: 14px;
+    color: var(--mid-gray);
+    margin-top: 4px;
+  }
+  .metric-divider {
+    width: 1px;
+    height: 48px;
+    background: var(--light-gray);
+  }
+
+  /* ── Container ── */
+  .container {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+
+  /* ── Section ── */
+  .section {
+    padding: 64px 0;
+  }
+  .section-label {
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 12px;
+  }
+  .section h2 {
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: clamp(22px, 3vw, 30px);
+    font-weight: 700;
+    line-height: 1.25;
+    margin-bottom: 20px;
+    color: var(--dark);
+  }
+  .section-intro {
+    font-size: 17px;
+    color: #5a5850;
+    max-width: 680px;
+    margin-bottom: 36px;
+  }
+
+  /* ── Pipeline ── */
+  .pipeline-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    position: relative;
+  }
+  .pipeline-step {
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    gap: 24px;
+    position: relative;
+  }
+  .step-indicator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .step-number {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Poppins', Arial, sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    color: white;
+    flex-shrink: 0;
+  }
+  .step-number.orange { background: var(--orange); }
+  .step-number.blue { background: var(--blue); }
+  .step-number.green { background: var(--green); }
+  .step-number.dark { background: var(--dark); }
+  .step-line {
+    width: 2px;
+    flex: 1;
+    background: var(--light-gray);
+    min-height: 24px;
+  }
+  .step-content {
+    padding-bottom: 36px;
+  }
+  .step-content h3 {
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    line-height: 1.3;
+    padding-top: 8px;
+  }
+  .step-content p {
+    color: #5a5850;
+    margin-bottom: 12px;
+  }
+
+  /* ── Chat simulation ── */
+  .chat-block {
+    background: white;
+    border: 1px solid var(--light-gray);
+    border-radius: 14px;
+    overflow: hidden;
+    margin: 16px 0;
+    box-shadow: var(--card-shadow);
+  }
+  .chat-header {
+    background: var(--dark);
+    color: var(--light);
+    padding: 10px 18px;
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .chat-header .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--blue);
+  }
+  .chat-msg {
+    padding: 16px 20px;
+    border-bottom: 1px solid #f0efe8;
+  }
+  .chat-msg:last-child { border-bottom: none; }
+  .chat-msg.user { background: #fdfcfa; }
+  .chat-msg.ai { background: white; }
+  .chat-sender {
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+  }
+  .chat-sender.user-name { color: var(--blue); }
+  .chat-sender.ai-name { color: var(--orange); }
+  .chat-text {
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--dark);
+  }
+  .chat-text code {
+    background: var(--light-gray);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+  }
+
+  /* ── Before/After ── */
+  .before-after {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 16px;
+    align-items: start;
+    margin: 20px 0;
+  }
+  .ba-card {
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--light-gray);
+    box-shadow: var(--card-shadow);
+  }
+  .ba-card-header {
+    padding: 10px 16px;
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .ba-card-header.before { background: #fce4e4; color: #a33; }
+  .ba-card-header.after { background: var(--green-soft); color: #4a6332; }
+  .ba-card-body {
+    padding: 14px 16px;
+    background: white;
+    font-size: 14px;
+    line-height: 1.8;
+  }
+  .ba-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 44px;
+    color: var(--blue);
+  }
+  .ba-arrow svg { width: 28px; height: 28px; }
+
+  /* ── Key Insight callout ── */
+  .insight-callout {
+    background: var(--blue-soft);
+    border-left: 4px solid var(--blue);
+    border-radius: 0 12px 12px 0;
+    padding: 20px 24px;
+    margin: 20px 0;
+  }
+  .insight-callout strong {
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--blue);
+    display: block;
+    margin-bottom: 4px;
+  }
+  .insight-callout p {
+    font-size: 15px;
+    color: #3a4a5a;
+  }
+
+  /* ── Orange callout variant ── */
+  .insight-callout.orange {
+    background: var(--orange-soft);
+    border-left-color: var(--orange);
+  }
+  .insight-callout.orange strong { color: var(--orange); }
+  .insight-callout.orange p { color: #5a4a3a; }
+
+  /* ── Principle box ── */
+  .principle-box {
+    background: white;
+    border: 1px solid var(--light-gray);
+    border-radius: 14px;
+    padding: 24px 28px;
+    margin: 20px 0;
+    box-shadow: var(--card-shadow);
+  }
+  .principle-box h4 {
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: var(--dark);
+  }
+  .principle-box p {
+    color: #5a5850;
+    font-size: 15px;
+  }
+
+  /* ── Report demo block ── */
+  .report-demo {
+    background: white;
+    border: 1px solid var(--light-gray);
+    border-radius: 14px;
+    overflow: hidden;
+    margin: 16px 0;
+    box-shadow: var(--card-shadow);
+  }
+  .report-demo-header {
+    background: var(--dark);
+    color: var(--light);
+    padding: 10px 18px;
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .report-demo-body {
+    padding: 20px 24px;
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--dark);
+  }
+  .report-demo-body h5 {
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    margin: 16px 0 8px;
+    color: var(--dark);
+  }
+  .report-demo-body h5:first-child { margin-top: 0; }
+  .report-demo-body ul {
+    margin: 0 0 8px 18px;
+    font-size: 14px;
+    color: #5a5850;
+  }
+  .report-demo-body ul li { margin-bottom: 4px; }
+  .report-demo-body .metric-inline {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 13px;
+    background: var(--light);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  /* ── Screenshot placeholder ── */
+  .screenshot-block {
+    background: linear-gradient(135deg, #f0efe8 0%, #e8e6dc 100%);
+    border: 2px dashed var(--mid-gray);
+    border-radius: 12px;
+    padding: 32px 24px;
+    text-align: center;
+    margin: 16px 0;
+  }
+  .screenshot-block .icon {
+    font-size: 32px;
+    margin-bottom: 8px;
+  }
+  .screenshot-block p {
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: 14px;
+    color: var(--mid-gray);
+    font-weight: 500;
+  }
+  .screenshot-block .caption {
+    font-size: 12px;
+    color: var(--mid-gray);
+    margin-top: 4px;
+    font-style: italic;
+  }
+
+  /* ── Advanced Tips ── */
+  .tips-section {
+    background: linear-gradient(135deg, #1a1a19 0%, #2a2a28 100%);
+    border-radius: 20px;
+    padding: 44px 40px;
+    margin: 20px 0 0;
+    color: var(--light);
+  }
+  .tips-section .section-label { color: var(--blue); }
+  .tips-section h2 { color: var(--light); }
+  .tip-card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+    padding: 24px;
+    margin-bottom: 16px;
+    transition: border-color 0.2s;
+  }
+  .tip-card:hover {
+    border-color: rgba(106,155,204,0.3);
+  }
+  .tip-card:last-child { margin-bottom: 0; }
+  .tip-icon {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 14px;
+    font-size: 18px;
+  }
+  .tip-icon.orange { background: rgba(217,119,87,0.15); }
+  .tip-icon.blue { background: rgba(106,155,204,0.15); }
+  .tip-icon.green { background: rgba(120,140,93,0.15); }
+  .tip-card h4 {
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--light);
+  }
+  .tip-card p {
+    font-size: 15px;
+    color: var(--mid-gray);
+    line-height: 1.6;
+  }
+  .tip-card .highlight {
+    color: var(--blue);
+    font-weight: 500;
+  }
+
+  /* ── Footer ── */
+  .footer {
+    text-align: center;
+    padding: 48px 0 40px;
+    color: var(--mid-gray);
+    font-size: 14px;
+    border-top: 1px solid var(--light-gray);
+  }
+  .footer a { color: var(--orange); text-decoration: none; }
+
+  /* ── Responsive ── */
+  @media (max-width: 640px) {
+    .metric-banner {
+      grid-template-columns: 1fr;
+      gap: 16px;
+      padding: 24px;
+    }
+    .metric-divider { width: 100%; height: 1px; }
+    .before-after {
+      grid-template-columns: 1fr;
+    }
+    .ba-arrow { transform: rotate(90deg); padding: 0; }
+    .tips-section { padding: 28px 20px; }
+    .pipeline-step { grid-template-columns: 44px 1fr; gap: 16px; }
+    .summary-grid { grid-template-columns: 1fr !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ════════════════════ HERO ════════════════════ -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      Кейс #2 — Убираем рутину
+    </div>
+    <h1>Еженедельный отчёт<br>за <span>10 минут</span><br>вместо полутора часов</h1>
+    <p class="hero-subtitle">Скриншоты дашбордов, дейли-апдейты, цифры из BI — Claude собирает всё в готовый отчёт, который не нужно перепроверять. В вашем стиле и с вашей терминологией.</p>
+  </div>
+</section>
+
+<!-- ════════════════════ METRICS ════════════════════ -->
+<div class="metric-banner">
+  <div class="metric-item">
+    <div class="metric-number">5-7</div>
+    <div class="metric-label">скриншотов на входе</div>
+  </div>
+  <div class="metric-divider"></div>
+  <div class="metric-item">
+    <div class="metric-number accent-blue">10 мин</div>
+    <div class="metric-label">вместо 1.5 часов</div>
+  </div>
+  <div class="metric-divider"></div>
+  <div class="metric-item">
+    <div class="metric-number accent-green">0 правок</div>
+    <div class="metric-label">отчёт готов к отправке</div>
+  </div>
+</div>
+
+<!-- ════════════════════ SUMMARY ════════════════════ -->
+<section class="section" style="padding-top: 0;">
+  <div class="container">
+    <div class="section-label">Результат</div>
+    <h2>Что вы получите, применяя этот флоу</h2>
+
+    <div class="summary-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 32px 0;">
+
+      <!-- Card 1: Accuracy -->
+      <div style="background: white; border: 1px solid var(--light-gray); border-radius: 16px; padding: 32px 28px; box-shadow: var(--card-shadow); position: relative; overflow: hidden;">
+        <div style="position: absolute; top: -12px; right: -8px; font-size: 80px; opacity: 0.06; font-family: 'Poppins', sans-serif; font-weight: 800; line-height: 1;">🎯</div>
+        <div style="font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--blue); margin-bottom: 12px;">Точность</div>
+        <div style="display: flex; align-items: baseline; gap: 8px; margin-bottom: 6px;">
+          <span style="font-family: 'Poppins', sans-serif; font-size: 48px; font-weight: 800; color: var(--dark); line-height: 1;">100%</span>
+        </div>
+        <div style="font-size: 15px; color: var(--mid-gray);">цифр считаны и пересчитаны корректно</div>
+        <div style="margin-top: 14px; background: var(--blue-soft); border-radius: 8px; padding: 8px 14px; font-size: 13px; color: #4a7ba8; font-family: 'Poppins', sans-serif; font-weight: 500; display: inline-block;">Даже ROAS D3 со скриншотов</div>
+      </div>
+
+      <!-- Card 2: Time -->
+      <div style="background: white; border: 1px solid var(--light-gray); border-radius: 16px; padding: 32px 28px; box-shadow: var(--card-shadow); position: relative; overflow: hidden;">
+        <div style="position: absolute; top: -12px; right: -8px; font-size: 80px; opacity: 0.06; font-family: 'Poppins', sans-serif; font-weight: 800; line-height: 1;">⏱</div>
+        <div style="font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--orange); margin-bottom: 12px;">Скорость</div>
+        <div style="display: flex; align-items: baseline; gap: 8px; margin-bottom: 6px;">
+          <span style="font-family: 'Poppins', sans-serif; font-size: 48px; font-weight: 800; color: var(--dark); line-height: 1;">10</span>
+          <span style="font-family: 'Poppins', sans-serif; font-size: 20px; font-weight: 600; color: var(--mid-gray);">мин</span>
+        </div>
+        <div style="font-size: 15px; color: var(--mid-gray);">вместо <span style="text-decoration: line-through; color: #c99;">1.5 часов</span> компиляции</div>
+        <div style="margin-top: 14px; background: var(--orange-soft); border-radius: 8px; padding: 8px 14px; font-size: 13px; color: #a85a3a; font-family: 'Poppins', sans-serif; font-weight: 500; display: inline-block;">×9 быстрее</div>
+      </div>
+
+      <!-- Card 3: Zero proofreading -->
+      <div style="background: white; border: 1px solid var(--light-gray); border-radius: 16px; padding: 32px 28px; box-shadow: var(--card-shadow); position: relative; overflow: hidden;">
+        <div style="position: absolute; top: -12px; right: -8px; font-size: 80px; opacity: 0.06; font-family: 'Poppins', sans-serif; font-weight: 800; line-height: 1;">✅</div>
+        <div style="font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--green); margin-bottom: 12px;">Без перепроверок</div>
+        <div style="display: flex; align-items: baseline; gap: 8px; margin-bottom: 6px;">
+          <span style="font-family: 'Poppins', sans-serif; font-size: 48px; font-weight: 800; color: var(--dark); line-height: 1;">0</span>
+          <span style="font-family: 'Poppins', sans-serif; font-size: 20px; font-weight: 600; color: var(--mid-gray);">правок</span>
+        </div>
+        <div style="font-size: 15px; color: var(--mid-gray);">отчёт сразу готов к отправке</div>
+        <div style="margin-top: 14px; background: var(--green-soft); border-radius: 8px; padding: 8px 14px; font-size: 13px; color: #5a6d42; font-family: 'Poppins', sans-serif; font-weight: 500; display: inline-block;">Не как AI-саммаризаторы</div>
+      </div>
+
+      <!-- Card 4: Style match -->
+      <div style="background: white; border: 1px solid var(--light-gray); border-radius: 16px; padding: 32px 28px; box-shadow: var(--card-shadow); position: relative; overflow: hidden;">
+        <div style="position: absolute; top: -12px; right: -8px; font-size: 80px; opacity: 0.06; font-family: 'Poppins', sans-serif; font-weight: 800; line-height: 1;">🪞</div>
+        <div style="font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--blue); margin-bottom: 12px;">Ваш стиль</div>
+        <div style="display: flex; align-items: baseline; gap: 8px; margin-bottom: 6px;">
+          <span style="font-family: 'Poppins', sans-serif; font-size: 48px; font-weight: 800; color: var(--dark); line-height: 1;">1</span>
+          <span style="font-family: 'Poppins', sans-serif; font-size: 20px; font-weight: 600; color: var(--mid-gray);">пример</span>
+        </div>
+        <div style="font-size: 15px; color: var(--mid-gray);">достаточно чтобы сохранить стиль</div>
+        <div style="margin-top: 14px; background: var(--blue-soft); border-radius: 8px; padding: 8px 14px; font-size: 13px; color: #4a7ba8; font-family: 'Poppins', sans-serif; font-weight: 500; display: inline-block;">Терминология, сокращения, формат</div>
+      </div>
+
+    </div>
+
+    <!-- Bottom accent block -->
+    <div style="background: var(--dark); border-radius: 14px; padding: 24px 28px; display: flex; align-items: center; gap: 16px;">
+      <span style="font-size: 28px;">💬</span>
+      <div>
+        <div style="font-family: 'Poppins', sans-serif; font-size: 16px; font-weight: 600; color: var(--light); margin-bottom: 2px;">Не вычитка за AI — а отчёт, который сразу можно отправить</div>
+        <div style="font-size: 14px; color: var(--mid-gray);">Потому что AI получил ваш контекст, ваш стиль и ваши цифры — а не пытается угадать что важно.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════ CONTEXT ════════════════════ -->
+<section class="section" style="padding-top: 0; border-top: 1px solid var(--light-gray);">
+  <div class="container">
+    <div class="section-label">Зачем это нужно</div>
+    <h2>Проблема: отчёт — это не «просто написать текст»</h2>
+
+    <p class="section-intro">Еженедельный отчёт по UA — это сбор цифр с нескольких дашбордов, пересчёт метрик (ROAS D3 обновляется с задержкой), компиляция действий за неделю по нескольким проектам, и упаковка всего этого в структурированный текст для менеджмента. Каждую пятницу — 1-1.5 часа чистого времени.</p>
+
+    <div class="principle-box">
+      <h4>Почему обычные AI-саммаризаторы не работают</h4>
+      <p>Инструменты типа «summarize this meeting» или «AI weekly digest» дают поверхностное саммари, которое всё равно нужно вычитывать: не упустили ли нюанс, правильно ли интерпретирована метрика, не потерялся ли контекст решения. В итоге вы тратите время дважды — сначала ждёте генерацию, потом перечитываете и правите. Наш подход другой: AI получает <em>ваши</em> исходные данные, <em>ваш</em> стиль написания, и <em>ваш</em> контекст проектов — и выдаёт отчёт, который вы бы написали сами.</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════ PIPELINE ════════════════════ -->
+<section class="section" style="padding-top: 0;">
+  <div class="container">
+    <div class="section-label">Пошаговый процесс</div>
+    <h2>5 шагов — от скриншотов до готового отчёта</h2>
+
+    <div class="pipeline-steps">
+
+      <!-- ─── Step 1: Style Reference ─── -->
+      <div class="pipeline-step">
+        <div class="step-indicator">
+          <div class="step-number blue">1</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-content">
+          <h3>Загрузите пример вашего отчёта — один раз</h3>
+          <p>Покажите Claude как выглядит ваш типичный еженедельный отчёт. Он считает не только структуру, но и стиль: какие сокращения вы используете (CPI, ROAS D3, TTR), как форматируете числа, сколько деталей даёте по каждому проекту, какие англицизмы оставляете, а что пишете на русском.</p>
+
+          <div class="chat-block">
+            <div class="chat-header"><span class="dot"></span> Диалог с Claude</div>
+            <div class="chat-msg user">
+              <div class="chat-sender user-name">Вы</div>
+              <div class="chat-text">Вот пример моего пятничного отчёта по проектам — это формат, в котором я отправляю статус менеджменту. Запомни стиль: как я пишу метрики, какие сокращения использую, уровень детализации. Дальше я буду скидывать данные в течение недели, а в пятницу попрошу собрать отчёт в таком же формате.</div>
+            </div>
+            <div class="chat-msg ai">
+              <div class="chat-sender ai-name">Claude</div>
+              <div class="chat-text">Изучила формат. Вот что вижу в вашем стиле: проекты идут по отдельным блокам (Smart Mirror → Heart Rate → EveryScan), каждый блок содержит 2-3 ключевых метрики с динамикой wow, затем 2-4 bullet с действиями за неделю и 1-2 bullet с планом на следующую. Метрики пишете как <code>CPI $2.3 → $1.9 (-17%)</code>, ROAS указываете с пометкой «minus-4-day data». Сокращения: CPI, CPA, TTR, CPP, ROAS D3 — оставляете на английском, описания действий — на русском. Буду придерживаться этого формата.</div>
+            </div>
+          </div>
+
+          <div class="insight-callout">
+            <strong>Один пример = постоянный стиль</strong>
+            <p>Вы загружаете пример один раз в проект Claude — и он сохраняется. Каждый следующий отчёт будет в том же формате без повторных объяснений. Если стиль нужно подкорректировать — достаточно сказать «теперь добавляй ещё строку с trial CR».</p>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- ─── Step 2: Daily data throughout the week ─── -->
+      <div class="pipeline-step">
+        <div class="step-indicator">
+          <div class="step-number orange">2</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-content">
+          <h3>В течение недели — скидывайте данные как есть</h3>
+          <p>Каждый день или через день отправляйте скриншоты дашбордов, краткие заметки о сделанном, результаты тестов. Не нужно структурировать — просто скидывайте как есть. Claude накопит всё к пятнице.</p>
+
+          <div class="chat-block">
+            <div class="chat-header"><span class="dot"></span> Понедельник–четверг</div>
+            <div class="chat-msg user">
+              <div class="chat-sender user-name">Пн</div>
+              <div class="chat-text">Запустила новую CPP на Smart Mirror для US — «TV Brands» с фокусом на Samsung/LG. Вот скрин из кабинета за первые сутки.</div>
+            </div>
+            <div class="chat-msg user">
+              <div class="chat-sender user-name">Вт</div>
+              <div class="chat-text">[скриншот BI-дашборда] — свежие данные по CPI и spend за прошлую неделю по Heart Rate, плюс ROAS D3 minus-4-day.</div>
+            </div>
+            <div class="chat-msg user">
+              <div class="chat-sender user-name">Ср</div>
+              <div class="chat-text">Отключила 3 ключа в discovery-кампании EveryScan, CPA trial был выше $8. Добавила 12 новых ключей в samsung-кластер Smart Mirror на BR.</div>
+            </div>
+            <div class="chat-msg user">
+              <div class="chat-sender user-name">Чт</div>
+              <div class="chat-text">[скриншот] — обновлённые ROAS D3 за эту неделю по всем проектам. Smart Mirror US вырос с 14% до 17%.</div>
+            </div>
+          </div>
+
+          <div class="insight-callout orange">
+            <strong>Скриншоты BI-дашбордов — это полноценные данные</strong>
+            <p>Claude точно считывает цифры с изображений дашбордов — CPI, CPA, ROAS D3, Spend, Install count, TTR. Он не «примерно распознаёт» — он читает конкретные числа и может их пересчитывать (например, вычислить динамику wow или проверить что ROAS D3 = Revenue D3 / Spend).</p>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- ─── Step 3: Screenshot number extraction ─── -->
+      <div class="pipeline-step">
+        <div class="step-indicator">
+          <div class="step-number green">3</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-content">
+          <h3>Claude считывает и пересчитывает цифры</h3>
+          <p>Когда вы загружаете скриншот дашборда, Claude извлекает все числовые метрики, распознаёт к какому проекту/кампании/гео они относятся, и может пересчитать производные метрики — динамику, процентное изменение, средние значения.</p>
+
+          <div class="screenshot-block">
+            <div class="icon">📊</div>
+            <p>Скриншот BI-дашборда</p>
+            <div class="caption">Claude считывает: CPI $2.1, Installs 1,247, Spend $2,618, ROAS D3 16.8%, Trial CR 34%</div>
+          </div>
+
+          <div class="chat-block">
+            <div class="chat-header"><span class="dot"></span> Диалог с Claude</div>
+            <div class="chat-msg ai">
+              <div class="chat-sender ai-name">Claude</div>
+              <div class="chat-text">Со скриншота вижу данные за Smart Mirror US, неделя 10-16 Feb:<br><br>
+              <code>CPI $2.1</code> (пред. неделя $2.4 → <strong>-12.5%</strong>)<br>
+              <code>Installs 1,247</code> (пред. 1,103 → <strong>+13.1%</strong>)<br>
+              <code>Spend $2,618</code> (пред. $2,647 → <strong>-1.1%</strong>)<br>
+              <code>ROAS D3 16.8%</code> (minus-4-day, пред. 14.2% → <strong>+2.6pp</strong>)<br><br>
+              Проверка: Spend / Installs = $2,618 / 1,247 = $2.10 — совпадает с CPI на дашборде. ✓</div>
+            </div>
+          </div>
+
+          <div class="insight-callout">
+            <strong>Пересчёт как проверка — не как угадывание</strong>
+            <p>Claude не просто «переписывает цифры» — он пересчитывает их друг через друга для верификации. Если CPI на дашборде не совпадает с Spend/Installs — он укажет на расхождение. Это уровень точности, который нужен для финансовых отчётов.</p>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- ─── Step 4: Friday compilation ─── -->
+      <div class="pipeline-step">
+        <div class="step-indicator">
+          <div class="step-number blue">4</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-content">
+          <h3>Пятница — собираем отчёт одной фразой</h3>
+          <p>К пятнице Claude уже видит все данные недели. Одна просьба — и он компилирует структурированный отчёт в вашем формате, с метриками, действиями и планами.</p>
+
+          <div class="chat-block">
+            <div class="chat-header"><span class="dot"></span> Диалог с Claude</div>
+            <div class="chat-msg user">
+              <div class="chat-sender user-name">Вы</div>
+              <div class="chat-text">Собери пятничный отчёт по всем проектам за эту неделю. Данные по CPI/CPA/Spend — свежие через четверг, ROAS D3 — minus-4-day.</div>
+            </div>
+            <div class="chat-msg ai">
+              <div class="chat-sender ai-name">Claude</div>
+              <div class="chat-text">Готово. Вот отчёт в вашем формате:</div>
+            </div>
+          </div>
+
+          <!-- Report output demo -->
+          <div class="report-demo">
+            <div class="report-demo-header">📋 Сгенерированный отчёт — готов к отправке</div>
+            <div class="report-demo-body">
+
+              <h5>Smart Mirror</h5>
+              <ul>
+                <li><span class="metric-inline">CPI $2.1</span> → <span class="metric-inline">$1.9</span> (-9%), <span class="metric-inline">Spend $2,618</span> стабильный, <span class="metric-inline">ROAS D3 16.8%</span> (minus-4-day, +2.6pp wow)</li>
+                <li>Запустила новую CPP «TV Brands» на US — фокус Samsung/LG, первые 3 дня: TTR +8% vs default</li>
+                <li>Расширила samsung-кластер на BR: +12 ключей, из них 4 с SAP 30+</li>
+                <li><strong>Следующая неделя:</strong> оценка CPP по ROAS D3, запуск samsung-кампании на MX</li>
+              </ul>
+
+              <h5>Heart Rate</h5>
+              <ul>
+                <li><span class="metric-inline">CPI $1.4</span>, <span class="metric-inline">CPA trial $4.2</span> (-6% wow), <span class="metric-inline">ROAS D3 22.1%</span> (minus-4-day)</li>
+                <li>Оптимизация discovery-кампании: убрала 3 ключа с CPA trial > $8, перераспределила бюджет</li>
+                <li><strong>Следующая неделя:</strong> тест CPP с новым first-frame на US</li>
+              </ul>
+
+              <h5>EveryScan</h5>
+              <ul>
+                <li><span class="metric-inline">CPI $3.8</span> (+5% wow — рост конкуренции в Google Lens ключах), <span class="metric-inline">ROAS D3 11.3%</span></li>
+                <li>Аукцион на основные ключи остаётся дорогим ($4-5 CPI), мониторю изменения после обновления рекламных плейсментов Apple в марте</li>
+                <li><strong>Следующая неделя:</strong> повторный тест ранее отключённых ключей если CPM снизится</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="insight-callout">
+            <strong>Это не «сгенерированный текст» — это ваши данные в вашем формате</strong>
+            <p>Каждая цифра — из скриншотов, которые вы загрузили. Каждое действие — из ваших дейли-апдейтов. Стиль — из примера отчёта, который вы показали один раз. Claude ничего не выдумывает и не «дополняет для красоты».</p>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- ─── Step 5: Send ─── -->
+      <div class="pipeline-step">
+        <div class="step-indicator">
+          <div class="step-number green">5</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-content">
+          <h3>Отправляем — без перечитывания</h3>
+          <p>Отчёт готов. Вы не перечитываете его на предмет «а не упустил ли AI что-то» — потому что AI не пытался угадать. Он работал только с данными, которые вы ему дали, и написал ровно так, как вы пишете сами.</p>
+
+          <div class="before-after">
+            <div class="ba-card">
+              <div class="ba-card-header before">Без AI</div>
+              <div class="ba-card-body">
+                <div style="font-size: 14px; line-height: 1.7; color: #5a5850;">
+                  1. Открыть BI для каждого проекта<br>
+                  2. Выписать метрики вручную<br>
+                  3. Пересчитать wow-динамику<br>
+                  4. Вспомнить все действия за неделю<br>
+                  5. Структурировать в текст<br>
+                  6. Перечитать и отформатировать<br>
+                  <strong style="color: #a33;">~1.5 часа</strong>
+                </div>
+              </div>
+            </div>
+            <div class="ba-arrow">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </div>
+            <div class="ba-card">
+              <div class="ba-card-header after">С AI</div>
+              <div class="ba-card-body">
+                <div style="font-size: 14px; line-height: 1.7; color: #5a5850;">
+                  1. Скриншоты в течение недели ✓<br>
+                  2. Заметки по ходу ✓<br>
+                  3. «Собери отчёт» в пятницу<br>
+                  4. Отправить<br>
+                  <br>
+                  <strong style="color: #4a6332;">~10 минут</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /pipeline-steps -->
+  </div>
+</section>
+
+
+<!-- ════════════════════ ADVANCED TIPS ════════════════════ -->
+<section class="section" style="padding-top: 0;">
+  <div class="container">
+    <div class="tips-section">
+      <div class="section-label">Advanced Tips</div>
+      <h2>Как выжать максимум из этого флоу</h2>
+
+      <!-- Tip 1 -->
+      <div class="tip-card">
+        <div class="tip-icon blue">📱</div>
+        <h4>Подключите Slack — пусть Claude считает за вас</h4>
+        <p>Если подключить Slack как коннектор в Claude, он сможет считать ваши сообщения за неделю: статусы в рабочих каналах, ответы коллегам, обсуждения задач. Вместо «вспомнить что делал» — Claude <span class="highlight">сам собирает ваши действия из Slack-переписки</span> и структурирует их по проектам.</p>
+      </div>
+
+      <!-- Tip 2 -->
+      <div class="tip-card">
+        <div class="tip-icon orange">📋</div>
+        <h4>Закидывайте дейли-отчёты или ссылки на задачи</h4>
+        <p>Если вы ведёте дейли-отчёты (хоть в виде заметок в телефоне) или трекаете задачи в Asana/Notion — загрузите их. Claude распарсит и включит в отчёт. Не нужно вспоминать в пятницу что вы делали во вторник — <span class="highlight">данные уже в контексте</span>.</p>
+      </div>
+
+      <!-- Tip 3 -->
+      <div class="tip-card">
+        <div class="tip-icon green">🔢</div>
+        <h4>Просите пересчитывать — не просто показывать</h4>
+        <p>Claude может не только считать цифры со скриншота, но и пересчитать производные: wow-динамику, % от бюджета, CPA trial из Spend и Trial count. Если ROAS D3 на дашборде обновляется с задержкой — <span class="highlight">попросите пересчитать из Revenue D3 и Spend</span>, Claude сделает это точно.</p>
+      </div>
+
+      <!-- Tip 4 -->
+      <div class="tip-card">
+        <div class="tip-icon blue">🎨</div>
+        <h4>Один пример формата — навсегда</h4>
+        <p>Загрузите один готовый отчёт (тот, что вы делали руками) в контекст проекта. Claude считает: структуру блоков, сокращения терминов (CPI, не «cost per install»), как вы форматируете числа ($2.3, не $2.30), <span class="highlight">какие метрики оставляете на английском, а что пишете на русском</span>. Все следующие отчёты будут в этом стиле автоматически.</p>
+      </div>
+
+      <!-- Tip 5 -->
+      <div class="tip-card">
+        <div class="tip-icon orange">📊</div>
+        <h4>Работает для любого периодического отчёта</h4>
+        <p>Тот же подход применим к месячным ревью, квартальным саммари, отчётам по конкретной кампании или CPP-тесту. Меняется только масштаб данных — <span class="highlight">принцип «скидывай данные → получай отчёт в своём формате» остаётся</span>.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════ FOOTER ════════════════════ -->
+<footer class="footer">
+  AI-Assisted UA · Курс для специалистов по закупке трафика · Создано с <a href="https://claude.ai" target="_blank">Claude</a>
+</footer>
+
+</body>
+</html>
