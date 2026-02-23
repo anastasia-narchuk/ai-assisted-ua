@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Кейс: От 500 кампаний к плану действий за 20 минут</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --dark: #141413;
+    --light: #faf9f5;
+    --mid-gray: #b0aea5;
+    --light-gray: #e8e6dc;
+    --orange: #d97757;
+    --blue: #6a9bcc;
+    --green: #788c5d;
+    --orange-soft: #f5e6de;
+    --blue-soft: #e3eef6;
+    --green-soft: #e8eddf;
+    --card-shadow: 0 1px 3px rgba(20,20,19,0.06), 0 8px 24px rgba(20,20,19,0.04);
+    --card-shadow-hover: 0 2px 6px rgba(20,20,19,0.08), 0 12px 32px rgba(20,20,19,0.06);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Lora', Georgia, serif;
+    background: var(--light);
+    color: var(--dark);
+    line-height: 1.7;
+    font-size: 17px;
+  }
+
+  /* ── Hero ── */
+  .hero {
+    background: var(--dark);
+    color: var(--light);
+    padding: 80px 0 72px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -120px; right: -80px;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(217,119,87,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-inner {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 32px;
+    position: relative;
+    z-index: 1;
+  }
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(217,119,87,0.15);
+    color: var(--orange);
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 24px;
+  }
+  .hero-badge svg { width: 16px; height: 16px; }
+  .hero h1 {
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: 42px;
+    font-weight: 700;
+    line-height: 1.15;
+    margin-bottom: 20px;
+    letter-spacing: -0.5px;
+  }
+  .hero h1 span { color: var(--orange); }
+  .hero-subtitle {
+    font-size: 19px;
+    color: var(--mid-gray);
+    max-width: 640px;
+    line-height: 1.6;
+  }
+
+  /* ── Metric banner ── */
+  .metric-banner {
+    background: white;
+    border: 1px solid var(--light-gray);
+    border-radius: 16px;
+    max-width: 860px;
+    margin: -36px auto 0;
+    padding: 28px 36px;
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr auto 1fr;
+    align-items: center;
+    gap: 0;
+    box-shadow: var(--card-shadow);
+  }
+  .metric-item { text-align: center; }
+  .metric-number {
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--dark);
+    line-height: 1.2;
+  }
+  .metric-number.accent-orange { color: var(--orange); }
+  .metric-number.accent-green { color: var(--green); }
+  .metric-label {
+    font-size: 14px;
+    color: var(--mid-gray);
+    margin-top: 4px;
+  }
+  .metric-divider {
+    width: 1px;
+    height: 40px;
+    background: var(--light-gray);
+    margin: 0 16px;
+  }
+
+  /* ── Section ── */
+  .section {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 48px 32px;
+  }
+  .section-label {
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--orange);
+    margin-bottom: 8px;
+  }
+  .section h2 {
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    line-height: 1.25;
+  }
+
+  /* ── Result cards ── */
+  .result-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 24px 0;
+  }
+  .result-card {
+    background: white;
+    border: 1px solid var(--light-gray);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: var(--card-shadow);
+  }
+  .result-card-label {
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+  .result-card-label.orange { color: var(--orange); }
+  .result-card-label.blue { color: var(--blue); }
+  .result-card-label.green { color: var(--green); }
+  .result-card-number {
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: 44px;
+    font-weight: 700;
+    line-height: 1.1;
+  }
+  .result-card-number span {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--mid-gray);
+  }
+  .result-card-desc {
+    color: #666;
+    font-size: 15px;
+    margin-top: 4px;
+  }
+  .result-card-tag {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 8px;
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    margin-top: 10px;
+  }
+  .result-card-tag.orange { background: var(--orange-soft); color: var(--orange); }
+  .result-card-tag.blue { background: var(--blue-soft); color: var(--blue); }
+  .result-card-tag.green { background: var(--green-soft); color: var(--green); }
+
+  /* ── Highlight card (call-to-action style) ── */
+  .highlight-card {
+    background: var(--orange-soft);
+    border-radius: 16px;
+    padding: 24px 28px;
+    display: flex;
+    gap: 16px;
+    align-items: start;
+    margin: 24px 0;
+  }
+  .highlight-card .icon {
+    width: 48px; height: 48px;
+    background: var(--dark);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 24px;
+  }
+  .highlight-card h3 {
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .highlight-card p {
+    color: #555;
+    font-size: 15px;
+  }
+
+  /* ── Info box ── */
+  .info-box {
+    background: white;
+    border: 1px solid var(--light-gray);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin: 16px 0;
+    box-shadow: var(--card-shadow);
+  }
+  .info-box h4 {
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .info-box p {
+    color: #555;
+    font-size: 15px;
+  }
+
+  /* ── Steps ── */
+  .steps-header {
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 32px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid var(--light-gray);
+  }
+  .step {
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    gap: 24px;
+    position: relative;
+  }
+  .step-indicator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .step-number {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Poppins', Arial, sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    color: white;
+    flex-shrink: 0;
+  }
+  .step-number.orange { background: var(--orange); }
+  .step-number.blue { background: var(--blue); }
+  .step-number.green { background: var(--green); }
+  .step-number.dark { background: var(--dark); }
+  .step-line {
+    width: 2px;
+    flex: 1;
+    background: var(--light-gray);
+    min-height: 24px;
+  }
+  .step-content {
+    padding-bottom: 36px;
+  }
+  .step-content h3 {
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    line-height: 1.3;
+    padding-top: 8px;
+  }
+  .step-content p {
+    color: #555;
+    margin-bottom: 12px;
+  }
+
+  /* ── Dialogue block ── */
+  .dialogue {
+    background: var(--dark);
+    border-radius: 16px;
+    overflow: hidden;
+    margin: 16px 0;
+  }
+  .dialogue-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 20px;
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--light);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .dialogue-header::before {
+    content: '';
+    width: 10px; height: 10px;
+    background: var(--orange);
+    border-radius: 50%;
+  }
+  .dialogue-msg {
+    padding: 16px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .dialogue-msg:last-child { border-bottom: none; }
+  .dialogue-role {
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+  }
+  .dialogue-role.user { color: var(--orange); }
+  .dialogue-role.ai { color: var(--green); }
+  .dialogue-text {
+    color: rgba(250,249,245,0.85);
+    font-size: 15px;
+    line-height: 1.65;
+  }
+
+  /* ── Note callout ── */
+  .note-callout {
+    background: var(--orange-soft);
+    border-left: 3px solid var(--orange);
+    border-radius: 0 12px 12px 0;
+    padding: 16px 20px;
+    margin: 16px 0;
+  }
+  .note-callout h4 {
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--orange);
+    margin-bottom: 4px;
+  }
+  .note-callout p {
+    color: #555;
+    font-size: 15px;
+  }
+
+  /* ── Data table ── */
+  .data-table-wrap {
+    overflow-x: auto;
+    margin: 16px 0;
+    border-radius: 12px;
+    border: 1px solid var(--light-gray);
+    box-shadow: var(--card-shadow);
+  }
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+  .data-table thead th {
+    background: var(--dark);
+    color: var(--light);
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 12px 14px;
+    text-align: left;
+    white-space: nowrap;
+  }
+  .data-table tbody td {
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--light-gray);
+    background: white;
+    vertical-align: middle;
+  }
+  .data-table tbody tr:last-child td { border-bottom: none; }
+  .tag {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 6px;
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .tag-a { background: #d4edda; color: #276738; }
+  .tag-b { background: #fff3cd; color: #856404; }
+  .tag-c { background: #fce4e4; color: #a33; }
+  .tag-d { background: #e2e3e5; color: #555; }
+  .tag-green { background: var(--green-soft); color: var(--green); }
+  .tag-orange { background: var(--orange-soft); color: var(--orange); }
+  .tag-blue { background: var(--blue-soft); color: var(--blue); }
+  .tag-gray { background: #eee; color: #666; }
+  .strikethrough { text-decoration: line-through; color: #aaa; }
+
+  /* ── ABCD Legend ── */
+  .abcd-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 20px 0;
+  }
+  .abcd-card {
+    border-radius: 12px;
+    padding: 18px 20px;
+    border: 1px solid var(--light-gray);
+    background: white;
+    box-shadow: var(--card-shadow);
+  }
+  .abcd-card h4 {
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .abcd-card p {
+    color: #555;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .abcd-letter {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    font-family: 'Poppins', Arial, sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    color: white;
+    flex-shrink: 0;
+  }
+  .abcd-letter.a { background: var(--green); }
+  .abcd-letter.b { background: #e6a817; }
+  .abcd-letter.c { background: var(--orange); }
+  .abcd-letter.d { background: var(--mid-gray); }
+
+  /* ── Advanced Tips ── */
+  .tips-section {
+    background: linear-gradient(135deg, #1a1a19 0%, #2a2a28 100%);
+    border-radius: 20px;
+    padding: 44px 40px;
+    margin: 20px 0 0;
+  }
+  .tips-section .section-label { color: var(--orange); }
+  .tips-section h2 { color: var(--light); }
+  .tip-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+    padding: 24px;
+    margin-top: 16px;
+    transition: background 0.2s;
+  }
+  .tip-card:hover { background: rgba(255,255,255,0.07); }
+  .tip-icon {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    margin-bottom: 12px;
+  }
+  .tip-icon.orange { background: rgba(217,119,87,0.15); }
+  .tip-icon.blue { background: rgba(106,155,204,0.15); }
+  .tip-icon.green { background: rgba(120,140,93,0.15); }
+  .tip-card h3 {
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--light);
+    margin-bottom: 8px;
+  }
+  .tip-card p {
+    color: rgba(250,249,245,0.65);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+  .tip-card p strong, .tip-card p b {
+    color: rgba(250,249,245,0.85);
+  }
+  .tip-highlight {
+    color: var(--orange) !important;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  /* ── Intro insight block ── */
+  .insight-block {
+    background: linear-gradient(135deg, var(--dark) 0%, #2a2a28 100%);
+    border-radius: 16px;
+    padding: 32px 28px;
+    margin: 24px 0;
+    color: var(--light);
+  }
+  .insight-block h3 {
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--orange);
+  }
+  .insight-block p {
+    color: rgba(250,249,245,0.75);
+    font-size: 15px;
+    line-height: 1.65;
+    margin-bottom: 12px;
+  }
+  .insight-block p:last-child { margin-bottom: 0; }
+  .insight-block em {
+    color: rgba(250,249,245,0.9);
+    font-style: italic;
+  }
+
+  /* ── Footer ── */
+  .footer {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 32px;
+    text-align: center;
+    color: var(--mid-gray);
+    font-size: 13px;
+    font-family: 'Poppins', Arial, sans-serif;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 640px) {
+    .hero h1 { font-size: 28px; }
+    .metric-banner { grid-template-columns: 1fr; gap: 16px; padding: 20px; }
+    .metric-divider { display: none; }
+    .result-grid { grid-template-columns: 1fr; }
+    .abcd-grid { grid-template-columns: 1fr; }
+    .tips-section { padding: 28px 20px; }
+    .step { grid-template-columns: 44px 1fr; gap: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════ HERO ══════ -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+      Кейс #4 — Аналитика и решения
+    </div>
+    <h1>От 500 кампаний<br>к плану действий<br>за <span>20 минут</span></h1>
+    <p class="hero-subtitle">ABCD-классификация кампаний, weekly view анализ и план оптимизации без потери объёма — в одном разговоре с Claude.</p>
+  </div>
+</section>
+
+<!-- ══════ METRIC BANNER ══════ -->
+<div class="metric-banner">
+  <div class="metric-item">
+    <div class="metric-number">500+</div>
+    <div class="metric-label">кампаний на входе</div>
+  </div>
+  <div class="metric-divider"></div>
+  <div class="metric-item">
+    <div class="metric-number accent-orange">20 мин</div>
+    <div class="metric-label">вместо 2-3 часов</div>
+  </div>
+  <div class="metric-divider"></div>
+  <div class="metric-item">
+    <div class="metric-number accent-green">4 категории</div>
+    <div class="metric-label">ABCD + план действий</div>
+  </div>
+</div>
+
+<!-- ══════ RESULTS ══════ -->
+<section class="section">
+  <div class="section-label">Итог</div>
+  <h2>Что получаем в результате</h2>
+
+  <div class="result-grid">
+    <div class="result-card">
+      <div class="result-card-label orange">Скорость</div>
+      <div class="result-card-number">20 <span>мин</span></div>
+      <div class="result-card-desc">вместо 2-3 часов ручного анализа</div>
+      <div class="result-card-tag orange">x7 быстрее</div>
+    </div>
+    <div class="result-card">
+      <div class="result-card-label blue">Глубина</div>
+      <div class="result-card-number">4 <span>недели</span></div>
+      <div class="result-card-desc">тренд по каждой кампании, а не только текущий срез</div>
+      <div class="result-card-tag blue">Weekly view</div>
+    </div>
+    <div class="result-card">
+      <div class="result-card-label green">Действия</div>
+      <div class="result-card-number">ABCD</div>
+      <div class="result-card-desc">каждая кампания получает категорию + конкретное действие</div>
+      <div class="result-card-tag green">Скейл / Лимит / Оптимизация / Ожидание</div>
+    </div>
+    <div class="result-card">
+      <div class="result-card-label orange">Принцип</div>
+      <div class="result-card-number" style="font-size:32px;">Net-neutral</div>
+      <div class="result-card-desc">оптимизация без потери объёма трафика</div>
+      <div class="result-card-tag orange">Объём сохранён</div>
+    </div>
+  </div>
+
+  <div class="highlight-card">
+    <div class="icon">&#128161;</div>
+    <div>
+      <h3>Не промпты, а другой уровень работы с AI</h3>
+      <p>В предыдущих кейсах мы передавали AI данные и чёткие правила. Здесь — другой принцип: вы описываете AI свою проблему как коллеге, <strong>не давая готового решения</strong>, и получаете подход, о котором сами могли не подумать.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ KEY INSIGHT BLOCK ══════ -->
+<section class="section" style="padding-top: 0;">
+  <div class="section-label">Ключевой приём</div>
+  <h2>Не давайте AI решение — опишите проблему</h2>
+
+  <p style="color: #555; margin-bottom: 16px;">В предыдущих кейсах мы передавали AI чёткие правила и данные. Здесь — другой уровень: вы описываете свой bottleneck как коллеге, и AI предлагает подход, о котором вы могли не подумать.</p>
+
+  <div class="insight-block">
+    <h3>Реальный пример</h3>
+    <p>Специалист описал проблему: <em>«Оптимизирую еженедельно, но вижу только текущий срез. Руками смотреть историю по сотням ключей — нереально. Боюсь, что зарезаю ставки на ключах, где перформ просто временно просел...»</em></p>
+    <p>AI предложил: <em>«Тебе нужен weekly view — ключ/кампания на номер недели. Тогда я смогу видеть тренд и отличать временный просад от устойчивого падения.»</em></p>
+    <p>Этот формат специалист потом запросил у BI-команды. <strong style="color: var(--orange);">Решение пришло не из экспертизы — а из правильно заданного вопроса.</strong></p>
+  </div>
+</section>
+
+<!-- ══════ PROBLEM ══════ -->
+<section class="section" style="padding-top: 0;">
+  <div class="section-label">Зачем это нужно</div>
+  <h2>Проблема: оптимизировать 500 кампаний в моменте — невозможно</h2>
+  <p style="color: #555; margin-bottom: 16px;">Раз в неделю вы открываете отчёт по кампаниям. Видите CPA paid, ROAS, installs — но только за текущий период. Чтобы понять, временная это просадка или устойчивое падение, нужно поднять историю. По каждому ключу. По каждой кампании. При 300-500 активных ключах — это 2-3 часа monkey job, а гео может быть 15-20.</p>
+  <p style="color: #555; margin-bottom: 16px;">В результате отсматриваете только самые объёмные кампании, а по средним и мелким принимаете решения вслепую. Зарезали ставку на ключе, который просел на одну неделю — потеряли объём. Не зарезали ключ, который падает уже месяц — слили бюджет.</p>
+
+  <div class="info-box">
+    <h4>Ключевой принцип</h4>
+    <p>Мы не просто «ускоряем» ручной анализ. Мы передаём AI контекст: что такое «временная просадка» vs «структурная проблема», какие KPI считать порогом, и как перераспределять бюджет без потери объёма. AI классифицирует сотни кампаний по этой логике за минуты — консистентно и без усталости.</p>
+  </div>
+</section>
+
+<!-- ══════ STEPS ══════ -->
+<section class="section" style="padding-top: 0;">
+  <h2 class="steps-header">6 шагов — от выгрузки до плана действий</h2>
+
+  <!-- STEP 1 -->
+  <div class="step">
+    <div class="step-indicator">
+      <div class="step-number orange">1</div>
+      <div class="step-line"></div>
+    </div>
+    <div class="step-content">
+      <h3>Опишите проблему — не решение</h3>
+      <p>Не начинайте с «классифицируй мне кампании по ABCD». Начните с боли — опишите что именно не работает в вашем текущем процессе. AI может предложить подход, о котором вы не думали.</p>
+
+      <div class="dialogue">
+        <div class="dialogue-header">Диалог с Claude</div>
+        <div class="dialogue-msg">
+          <div class="dialogue-role user">Вы</div>
+          <div class="dialogue-text">У меня 300+ ключей в кампаниях Smart Mirror, оптимизирую раз в неделю. Вижу только текущий перформ за неделю. Руками смотреть историю каждого ключа — нереально. Боюсь что зарезаю ставки на ключах, где перформ просто временно просел. А ещё — когда оптимизирую (снижаю ставки на плохих), объём трафика падает, и через пару месяцев сижу на микробюджетах.</div>
+        </div>
+        <div class="dialogue-msg">
+          <div class="dialogue-role ai">Claude</div>
+          <div class="dialogue-text">Вижу две проблемы: 1) нет исторического контекста при принятии решений, 2) оптимизация без компенсации объёма ведёт к downward spiral. Для первой проблемы тебе нужен отчёт в формате weekly view — ключ/кампания по неделям. Тогда я смогу видеть тренд: просадка одной недели или устойчивое падение. Для второй — каждый раунд оптимизации должен быть net-neutral по объёму: снижаешь ставку на одних ключах → поднимаешь на других или добавляешь новые источники.</div>
+        </div>
+      </div>
+
+      <div class="note-callout">
+        <h4>Обратите внимание</h4>
+        <p>Мы не давали AI готовый фреймворк. Мы описали боль — и получили два инсайта: формат weekly view (который потом запросили у BI) и принцип net-neutral оптимизации. Этот подход можно использовать для любой задачи: не давайте решение — дайте проблему.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="step">
+    <div class="step-indicator">
+      <div class="step-number blue">2</div>
+      <div class="step-line"></div>
+    </div>
+    <div class="step-content">
+      <h3>Загрузка данных в weekly view формате</h3>
+      <p>Загружаем файл с данными по кампаниям в формате: кампания/ключ + неделя. Каждая строка — это перформ одной кампании за одну неделю. Метрики: Spend, Installs, Trials, Paid, CPI, CPA Trial, CPA Paid, ROAS D3.</p>
+
+      <div class="data-table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Кампания</th>
+              <th>Неделя</th>
+              <th>Spend</th>
+              <th>Installs</th>
+              <th>Trials</th>
+              <th>Paid</th>
+              <th>CPA Paid</th>
+              <th>ROAS D3</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>SM_samsung_US_exact</td>
+              <td>W1</td>
+              <td>$1,240</td>
+              <td>380</td>
+              <td>95</td>
+              <td>28</td>
+              <td>$44.3</td>
+              <td>18.2%</td>
+            </tr>
+            <tr>
+              <td>SM_samsung_US_exact</td>
+              <td>W2</td>
+              <td>$1,180</td>
+              <td>365</td>
+              <td>88</td>
+              <td>26</td>
+              <td>$45.4</td>
+              <td>17.5%</td>
+            </tr>
+            <tr>
+              <td>SM_samsung_US_exact</td>
+              <td>W3</td>
+              <td>$1,310</td>
+              <td>390</td>
+              <td>92</td>
+              <td>30</td>
+              <td>$43.7</td>
+              <td>19.1%</td>
+            </tr>
+            <tr>
+              <td>SM_samsung_US_exact</td>
+              <td>W4</td>
+              <td>$1,290</td>
+              <td>385</td>
+              <td>90</td>
+              <td>29</td>
+              <td>$44.5</td>
+              <td>18.6%</td>
+            </tr>
+            <tr>
+              <td>SM_generic_US_broad</td>
+              <td>W1</td>
+              <td>$980</td>
+              <td>310</td>
+              <td>62</td>
+              <td>15</td>
+              <td>$65.3</td>
+              <td>11.2%</td>
+            </tr>
+            <tr>
+              <td>SM_generic_US_broad</td>
+              <td>W4</td>
+              <td>$1,050</td>
+              <td>295</td>
+              <td>55</td>
+              <td>12</td>
+              <td>$87.5</td>
+              <td>8.4%</td>
+            </tr>
+            <tr style="color: var(--mid-gray); font-style: italic;">
+              <td colspan="8">... ещё 72 строки (20 кампаний x 4 недели)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="dialogue">
+        <div class="dialogue-header">Диалог с Claude</div>
+        <div class="dialogue-msg">
+          <div class="dialogue-role user">Вы</div>
+          <div class="dialogue-text">Вот weekly view по кампаниям Smart Mirror за 4 недели. KPI: CPA paid ≤ $50 для US/UK (Tier 1), ≤ $35 для остальных гео. ROAS D3 ≥ 17% для Tier 1, ≥ 20% для остальных. Проанализируй тренды и классифицируй.</div>
+        </div>
+        <div class="dialogue-msg">
+          <div class="dialogue-role ai">Claude</div>
+          <div class="dialogue-text">Загрузил данные — вижу 20 кампаний по 4 недели, итого 80 строк. Сейчас проанализирую тренды по каждой кампании, сравню средний перформ за месяц с последней неделей, и классифицирую по системе ABCD. Применю пороги: CPA paid ≤ $50 / ROAS D3 ≥ 17% для Tier 1.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="step">
+    <div class="step-indicator">
+      <div class="step-number green">3</div>
+      <div class="step-line"></div>
+    </div>
+    <div class="step-content">
+      <h3>AI классифицирует по ABCD</h3>
+      <p>Claude проходит по каждой кампании, сравнивает средний перформ за месяц с последней неделей, и присваивает категорию. Каждая категория — это конкретное действие.</p>
+
+      <div class="abcd-grid">
+        <div class="abcd-card">
+          <h4><span class="abcd-letter a">A</span> Скейлить</h4>
+          <p>Месяц в KPI + последняя неделя в KPI. Поднять ставки, расширить бюджет. Самые надёжные кампании.</p>
+        </div>
+        <div class="abcd-card">
+          <h4><span class="abcd-letter b">B</span> Переждать</h4>
+          <p>Месяц в KPI + последняя неделя ниже KPI. Временный просад. Лимитировать daily budget, сохранить ставки, ревью через неделю.</p>
+        </div>
+        <div class="abcd-card">
+          <h4><span class="abcd-letter c">C</span> Оптимизировать</h4>
+          <p>И месяц и неделя ниже KPI. Структурная проблема. Снизить ставки — но с компенсацией объёма!</p>
+        </div>
+        <div class="abcd-card">
+          <h4><span class="abcd-letter d">D</span> Набрать данные</h4>
+          <p>&lt;15 installs/week. Мало данных для надёжных выводов. Оценивать на уровне кластера, не индивидуально.</p>
+        </div>
+      </div>
+
+      <div class="data-table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Кампания</th>
+              <th>Категория</th>
+              <th>CPA Paid (avg)</th>
+              <th>CPA Paid (W4)</th>
+              <th>ROAS D3 (avg)</th>
+              <th>Тренд</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>SM_samsung_US_exact</td>
+              <td><span class="tag tag-a">A</span></td>
+              <td>$44.5</td>
+              <td>$44.5</td>
+              <td>18.4%</td>
+              <td>Стабильный</td>
+            </tr>
+            <tr>
+              <td>SM_airplay_US_exact</td>
+              <td><span class="tag tag-a">A</span></td>
+              <td>$42.1</td>
+              <td>$40.8</td>
+              <td>19.7%</td>
+              <td>Растёт</td>
+            </tr>
+            <tr>
+              <td>SM_lg_UK_exact</td>
+              <td><span class="tag tag-b">B</span></td>
+              <td>$46.2</td>
+              <td>$58.0</td>
+              <td>16.8%</td>
+              <td>W4 просел</td>
+            </tr>
+            <tr>
+              <td>SM_chromecast_US_broad</td>
+              <td><span class="tag tag-b">B</span></td>
+              <td>$48.5</td>
+              <td>$62.3</td>
+              <td>15.1%</td>
+              <td>W4 аномалия</td>
+            </tr>
+            <tr>
+              <td>SM_generic_US_broad</td>
+              <td><span class="tag tag-c">C</span></td>
+              <td>$72.4</td>
+              <td>$87.5</td>
+              <td>9.8%</td>
+              <td>Ухудшается</td>
+            </tr>
+            <tr>
+              <td>SM_miracast_DE_exact</td>
+              <td><span class="tag tag-c">C</span></td>
+              <td>$68.0</td>
+              <td>$75.2</td>
+              <td>10.5%</td>
+              <td>Стабильно плохой</td>
+            </tr>
+            <tr>
+              <td>SM_fire_CA_exact</td>
+              <td><span class="tag tag-d">D</span></td>
+              <td>$52.0</td>
+              <td>$48.0</td>
+              <td>14.2%</td>
+              <td>Мало данных (8 inst/w)</td>
+            </tr>
+            <tr>
+              <td>SM_brands_AU_exact</td>
+              <td><span class="tag tag-d">D</span></td>
+              <td>$41.0</td>
+              <td>—</td>
+              <td>—</td>
+              <td>Мало данных (5 inst/w)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="note-callout">
+        <h4>Почему weekly view критичен</h4>
+        <p>Без weekly view вы бы увидели SM_lg_UK_exact с CPA $46.2 (в KPI) и не тронули. Но Claude видит, что W4 = $58 — если следующая неделя подтвердит тренд, нужно действовать. А SM_chromecast_US_broad выглядит плохо по W4, но W1-W3 были в норме — скорее всего аномалия, не структура.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 4 -->
+  <div class="step">
+    <div class="step-indicator">
+      <div class="step-number orange">4</div>
+      <div class="step-line"></div>
+    </div>
+    <div class="step-content">
+      <h3>План действий с net-neutral принципом</h3>
+      <p>Ключевой момент: каждый раунд оптимизации должен быть net-neutral или net-positive по объёму трафика. Снижаешь ставку на одних — компенсируешь на других.</p>
+
+      <div class="dialogue">
+        <div class="dialogue-header">Диалог с Claude</div>
+        <div class="dialogue-msg">
+          <div class="dialogue-role ai">Claude</div>
+          <div class="dialogue-text">Готов план действий по принципу net-neutral:<br><br><strong>Высвобождаем:</strong> По Category C снижаем bid на 4 кампании, высвобождая ~$320/day.<br><br><strong>Перераспределяем:</strong><br>1. +$150/day → поднять ставки на Category A (SM_samsung_US_exact, SM_airplay_US_exact) — стабильный перформ, есть запас по CPA<br>2. +$100/day → запустить Broad Match кампании по samsung/airplay кластерам — максимальный потенциал объёма<br>3. +$70/day → расширить семантику в UK (новые ключи из Кейса #1)<br><br><strong>Category B:</strong> Не трогаем ставки. Лимитируем daily budget на текущем уровне. Ревью через неделю — если W5 подтверждает просад, переводим в C.<br><br><strong>Category D:</strong> Объединяем в кластерную оценку. SM_fire_CA + SM_brands_AU — суммарно 13 inst/week, оцениваем вместе. Пока оставляем.</div>
+        </div>
+      </div>
+
+      <div class="note-callout" style="background: var(--green-soft); border-left-color: var(--green);">
+        <h4 style="color: var(--green);">Почему не просто «отключить плохое»</h4>
+        <p>Если просто отключать Category C без компенсации, вы теряете $320/day трафика. Через месяц данных становится меньше, решения менее надёжные, вы режете ещё — <strong>downward spiral</strong>. Net-neutral принцип: каждый доллар, снятый с плохих кампаний, возвращается в хорошие или новые.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 5 -->
+  <div class="step">
+    <div class="step-indicator">
+      <div class="step-number blue">5</div>
+      <div class="step-line"></div>
+    </div>
+    <div class="step-content">
+      <h3>Fresh vs old data: контекст для решений</h3>
+      <p>Не все данные одинаково полезны. Принцип: свежие данные — основа решений, исторические — дополнительный чекап.</p>
+
+      <div class="dialogue">
+        <div class="dialogue-header">Диалог с Claude</div>
+        <div class="dialogue-msg">
+          <div class="dialogue-role user">Вы</div>
+          <div class="dialogue-text">У меня есть данные за 6 месяцев. SM_miracast_DE показывал хороший перформ в октябре-декабре, но с января CPA вырос 2x. Стоит ли ориентироваться на старые данные и ждать восстановления?</div>
+        </div>
+        <div class="dialogue-msg">
+          <div class="dialogue-role ai">Claude</div>
+          <div class="dialogue-text">Для принятия решений приоритет — свежие данные (последние 30 дней). Исторические (2+ месяцев) полезны как чекап: «раньше работало → в теории может восстановиться». Но если перформ ниже KPI уже 6+ недель — это структурное изменение (конкурент зашёл, аукцион изменился, сезонность прошла). Для SM_miracast_DE рекомендую: оптимизировать по свежим данным, не ждать «возвращения» к старому перформу. Октябрь-декабрь — это контекст, не цель.</div>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <h4>Правило для ASA</h4>
+        <p>ASA не обучается на события внутри приложения (trials, purchases). Поэтому если перформ испортился — нет смысла ждать что платформа «переобучится». Решение всегда на вашей стороне: скорректировать ставки, семантику, или перераспределить бюджет. Свежие данные (30 дней) = основа. Старые (2+ месяцев) = «в теории может быть лучше» — но не гарантия.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 6 -->
+  <div class="step">
+    <div class="step-indicator">
+      <div class="step-number green">6</div>
+    </div>
+    <div class="step-content">
+      <h3>Итоговый output — таблица с категориями и действиями</h3>
+      <p>На выходе — таблица, где каждая кампания имеет категорию ABCD, конкретное действие и приоритет. Экспортируем в Excel.</p>
+
+      <div class="data-table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Кампания</th>
+              <th>Категория</th>
+              <th>Действие</th>
+              <th>Приоритет</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>SM_samsung_US_exact</td>
+              <td><span class="tag tag-a">A</span></td>
+              <td>Поднять bid +15%, расширить budget</td>
+              <td><span class="tag tag-green">Высокий</span></td>
+            </tr>
+            <tr>
+              <td>SM_airplay_US_exact</td>
+              <td><span class="tag tag-a">A</span></td>
+              <td>Поднять bid +10%, тест Broad Match</td>
+              <td><span class="tag tag-green">Высокий</span></td>
+            </tr>
+            <tr>
+              <td>SM_lg_UK_exact</td>
+              <td><span class="tag tag-b">B</span></td>
+              <td>Лимитировать daily budget, ревью W5</td>
+              <td><span class="tag tag-blue">Средний</span></td>
+            </tr>
+            <tr>
+              <td>SM_chromecast_US_broad</td>
+              <td><span class="tag tag-b">B</span></td>
+              <td>Не трогать ставки, наблюдать W5</td>
+              <td><span class="tag tag-blue">Средний</span></td>
+            </tr>
+            <tr>
+              <td>SM_generic_US_broad</td>
+              <td><span class="tag tag-c">C</span></td>
+              <td>Снизить bid -20%, перенести бюджет в A</td>
+              <td><span class="tag tag-orange">Высокий</span></td>
+            </tr>
+            <tr>
+              <td>SM_miracast_DE_exact</td>
+              <td><span class="tag tag-c">C</span></td>
+              <td>Снизить bid -25%, тест новой семантики</td>
+              <td><span class="tag tag-orange">Высокий</span></td>
+            </tr>
+            <tr>
+              <td>SM_fire_CA_exact</td>
+              <td><span class="tag tag-d">D</span></td>
+              <td>Кластерная оценка, не индивидуальная</td>
+              <td><span class="tag tag-gray">Низкий</span></td>
+            </tr>
+            <tr>
+              <td>SM_brands_AU_exact</td>
+              <td><span class="tag tag-d">D</span></td>
+              <td>Кластерная оценка, набрать объём</td>
+              <td><span class="tag tag-gray">Низкий</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ ADVANCED TIPS ══════ -->
+<section class="section" style="padding-top: 0;">
+  <div class="tips-section">
+    <div class="section-label">Advanced Tips</div>
+    <h2>Как выжать максимум из этого фреймворка</h2>
+
+    <!-- Tip 1 -->
+    <div class="tip-card">
+      <div class="tip-icon orange">&#127908;</div>
+      <h3>Попробуйте «обстучать» свою стратегию об AI</h3>
+      <p>Опишите свои ботлнеки как коллеге. Без решений, без конкретных задач — просто расскажите что не работает. <em>«У меня одновременно нужно оптимизировать перформ и скейлить объём, но когда оптимизирую — объём падает, а когда скейлю — перформ портится...»</em> AI может предложить подход, который вам бы не пришёл в голову. Например: схему с одновременной оптимизацией + скейлом, где net-neutral принцип решает конфликт.</p>
+    </div>
+
+    <!-- Tip 2 -->
+    <div class="tip-card">
+      <div class="tip-icon green">&#128200;</div>
+      <h3>Добавьте «право голоса» AI в инструкции проекта</h3>
+      <p>Добавьте в инструкции проекта: <em>«Если видишь что кампания классифицирована в B, но паттерн похож на начало структурного падения — скажи. Если считаешь что KPI порог для этого гео слишком жёсткий или мягкий — предложи корректировку. Не ограничивайся только тем что я попросила.»</em> Теперь AI будет проявлять инициативу — и вы <span class="tip-highlight">не пропустите</span> паттерны, которые не искали.</p>
+    </div>
+
+    <!-- Tip 3 -->
+    <div class="tip-card">
+      <div class="tip-icon blue">&#127760;</div>
+      <h3>Каждый канал — своя логика ABCD</h3>
+      <p>ASA не оптимизируется на in-app events — решения всегда на вашей стороне. Google Search оптимизируется — ABCD пороги другие. По гео: Tier 1 (US/UK) = CPA paid ≤ $50, ROAS D3 ≥ 17%. Остальные = CPA ≤ $35, ROAS ≥ 20%. <strong>Настройте пороги один раз и сохраните в контексте проекта.</strong></p>
+    </div>
+
+    <!-- Tip 4 -->
+    <div class="tip-card">
+      <div class="tip-icon orange">&#128640;</div>
+      <h3>Перенесите принцип на social каналы</h3>
+      <p>Передайте принцип ABCD и net-neutral из этого кейса в Claude и скажите: <em>«Разработай аналогичную систему классификации, но с учётом того как работает аукцион и оптимизация в Meta и TikTok — где единица оптимизации не ключ, а креатив/аудитория, и есть creative fatigue вместо аукционных просадок.»</em> Это снова подтверждение главного поинта кейса — <span class="tip-highlight">описывайте проблему, не решение</span>. AI адаптирует фреймворк под специфику канала.</p>
+    </div>
+
+    <!-- Tip 5 -->
+    <div class="tip-card">
+      <div class="tip-icon green">&#128203;</div>
+      <h3>Сохраните контекст в проекте — не повторяйте себя</h3>
+      <p>Создайте проект в Claude с контекстом: KPI пороги по гео, правила ABCD, net-neutral принцип, формат weekly view. После этого для каждого нового раунда оптимизации достаточно загрузить свежий файл и написать: <em>«Проведи ABCD анализ по свежим данным»</em>. Вся логика уже в контексте.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ FOOTER ══════ -->
+<div class="footer">
+  AI-Assisted UA · Курс для специалистов по закупке трафика · Создано с Claude
+</div>
+
+</body>
+</html>
