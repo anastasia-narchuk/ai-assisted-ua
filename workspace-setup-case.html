@@ -630,8 +630,86 @@
     .summary-grid { grid-template-columns: 1fr !important; }
   }
 </style>
+<style>
+  #pw-overlay {
+    position: fixed; inset: 0; z-index: 9999;
+    background: #141413;
+    display: flex; align-items: center; justify-content: center;
+  }
+  #pw-box {
+    background: #1e1e1c;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 48px 40px;
+    width: 100%; max-width: 400px;
+    text-align: center;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.4);
+  }
+  #pw-box h2 { color: #faf9f5; font-size: 22px; font-weight: 600; margin-bottom: 8px; font-family: 'Poppins', sans-serif; }
+  #pw-box p { color: #b0aea5; font-size: 14px; margin-bottom: 28px; }
+  #pw-lock {
+    width: 48px; height: 48px;
+    background: rgba(217,119,87,0.15);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 24px;
+  }
+  #pw-input {
+    width: 100%; padding: 14px 16px;
+    border: 1px solid rgba(255,255,255,0.12); border-radius: 10px;
+    background: rgba(255,255,255,0.05); color: #faf9f5;
+    font-size: 16px; outline: none; margin-bottom: 16px;
+    font-family: 'Poppins', sans-serif; letter-spacing: 1px;
+    transition: border-color 0.2s; box-sizing: border-box;
+  }
+  #pw-input:focus { border-color: #d97757; }
+  #pw-btn {
+    width: 100%; padding: 14px;
+    background: #d97757; color: #fff; border: none;
+    border-radius: 10px; font-size: 16px; font-weight: 600;
+    cursor: pointer; font-family: 'Poppins', sans-serif;
+    transition: background 0.2s;
+  }
+  #pw-btn:hover { background: #c96a47; }
+  #pw-error { color: #e07070; font-size: 13px; margin-top: 12px; display: none; font-family: 'Poppins', sans-serif; }
+</style>
 </head>
 <body>
+
+<!-- ── Password Protection ── -->
+<div id="pw-overlay">
+  <div id="pw-box">
+    <div id="pw-lock">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d97757" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+    </div>
+    <h2>Закрытый доступ</h2>
+    <p>Введите пароль для просмотра материалов</p>
+    <input type="password" id="pw-input" placeholder="Пароль" autocomplete="current-password" />
+    <button id="pw-btn" onclick="checkPassword()">Войти</button>
+    <div id="pw-error">Неверный пароль. Попробуйте ещё раз.</div>
+  </div>
+</div>
+<script>
+  (function() {
+    if (sessionStorage.getItem('pw_ok') === '1') {
+      document.getElementById('pw-overlay').style.display = 'none';
+    }
+    document.getElementById('pw-input').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') checkPassword();
+    });
+  })();
+  function checkPassword() {
+    var val = document.getElementById('pw-input').value;
+    if (val === 'Qwerty666!') {
+      sessionStorage.setItem('pw_ok', '1');
+      document.getElementById('pw-overlay').style.display = 'none';
+    } else {
+      document.getElementById('pw-error').style.display = 'block';
+      document.getElementById('pw-input').value = '';
+      document.getElementById('pw-input').focus();
+    }
+  }
+</script>
 
 <!-- ════════════════════ HERO ════════════════════ -->
 <section class="hero">
